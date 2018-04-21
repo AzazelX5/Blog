@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>导航栏</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        #home_btn{
+            width: 200px;
+            height: 60px;
+            font-size: 30px;
+        }
+        .home_box{
+            padding-bottom: 50px;
+        }
+        a,a:hover{ text-decoration:none; color:#333}
+    </style>
+</head>
+<body>
+    {% load static %}
+    <div>
+      <img src="{% static 'images/head.jpg'%}" height="400" width="100%">
+    </div>
+
+    <div>
+        {% include 'jump_text.html' %}
+        <div class="text-center home_box">
+            <button id="home_btn" type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off">
+              <a href="{% url 'home' %}">进入主页</a>
+            </button>
+        </div>
+    </div>
+</body>
+</html>

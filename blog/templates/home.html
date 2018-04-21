@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>导航栏</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .top{
+            height: 155px;
+            border: crimson 1px solid;
+        }
+        .middle{
+            margin: 0 65px;
+            border: burlywood 1px solid;
+        }
+        .foot{
+            width: 100%;
+            height: 50px;
+            border: blueviolet 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="top">
+        {% include 'nav.html' %}
+    </div>
+
+    <!-- 内容 -->
+    <div class="middle">
+        {% include 'content.html' %}
+    </div>
+
+    <!-- 底部信息栏 -->
+    <div class="foot">
+        {% include 'foot.html' %}
+    </div>
+
+     <script>
+         // 显示器可用的工作高度
+         screen_height = window.screen.availHeight  ;
+         // alert(screen_height)
+
+         // 网页正文所用高度
+         height = document.body.scrollHeight ;
+
+         if(height < screen_height){
+             $('.foot').css({
+                 "position":"fixed",
+                 "bottom":"0",
+             })
+         }
+    </script>
+
+</body>
+</html>
