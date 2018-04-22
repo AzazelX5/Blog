@@ -36,13 +36,21 @@
             width: 100%;
             height: 40px;
             border: crimson 1px solid;
-            padding: 5px 0 10px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+        #label-name{
+            position: absolute;
+            top: 3px;
         }
         #label-name:hover{
             cursor: pointer;
         }
         #a-name{
-            margin-left: 20px;
+            font-size: 30px;
+            position: absolute;
+            top: -3px;
+            left: 130px;
         }
         #a-name:hover{
             cursor: pointer;
@@ -94,12 +102,26 @@
             margin-left: 30px;
         }
         a,a:hover{ text-decoration:none; color:#333}
+
+        .a-box{
+            font-size: 18px;
+            width: 520px;
+            line-height: 30px;
+            height: 120px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            background: greenyellow;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row ad-box text-center">
-            <span>广告位</span>
+            {% include 'advertisement.html' %}
         </div>
         <div class="row">
             <!-- 左边 -->
@@ -107,20 +129,17 @@
                 {% for article in article_list %}
                     <div class="article-list-box">
                         <div class="article-name">
-                            <div class="col-md-12">
-                                <span id="label-name" class="label label-info" style="font-size: 18px">python</span>
-                                <a href="{% url 'get' article.name %}">
-                                    <span id="a-name">{{ article.name }}</span>
-                                </a>
-
-                            </div>
+                            <span id="label-name" class="label label-info" style="font-size: 20px">python</span>
+                            <a href="{% url 'get' article.uuid %}" id="a-name">
+                                <span>{{ article.name }}</span>
+                            </a>
                         </div>
                         <div class="row article-content">
                             <div class="col-md-4">
                                 {% load static %}
                                 <img src="{% static 'images/python.jpg'%}" height="120" width="100%">
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-md-8 a-box">
                                 {{ article.content }}
                             </div>
                         </div>
@@ -171,7 +190,12 @@
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
-
+        $(document).ready(function () {
+            $('.a-box').each(function () {
+                var text = $(this).text();
+                $(this).html(text);
+            });
+         });
     </script>
 </body>
 </html>

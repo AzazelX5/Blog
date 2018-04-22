@@ -7,6 +7,9 @@
     <title>导航栏</title>
     <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+	{% load static %}
+	<script type="text/javascript" src="{% static 'js/showdown.min.js'%}"></script>
     <style>
         *{
             margin: 0;
@@ -25,6 +28,16 @@
             height: 50px;
             border: blueviolet 1px solid;
         }
+        .article-name{
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+        .article{
+            font-size: 20px;
+        }
+        .left-box{
+            border: deepskyblue 1px solid;
+        }
     </style>
 </head>
 <body>
@@ -37,12 +50,12 @@
     <div class="middle">
         <div class="container-fluid">
             <div class="row ad-box text-center">
-                <span>广告位</span>
+                {% include 'advertisement.html' %}
             </div>
             <div class="row">
                 <!-- 左边 -->
                 <div class="col-md-8 left-box">
-                    <div class="article-name">
+                    <div class="article-name text-center">
                         {{ name }}
                     </div>
                     <div class="article">
@@ -64,19 +77,25 @@
     </div>
 
      <script>
-         // 显示器可用的工作高度
-         screen_height = window.screen.availHeight  ;
-         // alert(screen_height)
+         $(document).ready(function () {
+             var text = $('.article').text();
+             $('.article').html(text);
+             // 显示器可用的工作高度
+             screen_height = window.screen.availHeight  ;
+             // alert(screen_height)
 
-         // 网页正文所用高度
-         height = document.body.scrollHeight ;
+             // 网页正文所用高度
+             height = document.body.scrollHeight ;
+             alert(height);
 
-         if(height < screen_height){
-             $('.foot').css({
-                 "position":"fixed",
-                 "bottom":"0",
-             })
-         }
+             if(height < screen_height - 50){
+                 $('.foot').css({
+                     "position":"fixed",
+                     "bottom":"0",
+                 })
+             }
+         });
+
     </script>
 
 </body>

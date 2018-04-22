@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>导航栏</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .top{
+            height: 155px;
+            border: crimson 1px solid;
+        }
+        .middle{
+            margin: 0 65px;
+            border: burlywood 1px solid;
+        }
+        .foot{
+            width: 100%;
+            height: 50px;
+            border: blueviolet 1px solid;
+        }
+        .edit-result-box{
+            height: 600px;
+            width: 100%;
+        }
+        .edit-result-box img{
+            /*width: 100%;*/
+        }
+        #result{
+            border: darkgrey 1px solid;
+            overflow-y: auto;
+        }
+        .ad-box{
+            border: deepskyblue 1px solid;
+        }
+        .row{
+            margin-bottom: 10px;
+        }
+        .xz-box{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+    <div class="xz-box">
+        <img id="xuanzhuan" src="{% static 'images/xuanzhuan.png'%}" height="50" width="50">
+        <span>上传中,请稍等。。。</span>
+    </div>
+
+    <!-- 导航栏 -->
+    <div class="top">
+        {% include 'nav.html' %}
+    </div>
+
+    <!-- 内容 -->
+    <div class="middle">
+        <div class="container-fluid">
+            <div class="row ad-box text-center">
+                <div class="col-md-12">
+                    {% include 'advertisement.html' %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    文章标题：<input type="text" id="article-name" value="">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 edit">
+                    {% load static %}
+                    <p>文章编辑：</p>
+                    <textarea id="content" class="edit-result-box" onkeyup="compile()"></textarea>
+                </div>
+                <div class="col-md-6 show">
+                    <p>文章展示：</p>
+                    <div id="result" class="edit-result-box"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <button id="upload" style="width: 80px; height: 30px; font-size: 20px; float: right;">提交</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部信息栏 -->
+    <div class="foot">
+        {% include 'foot.html' %}
+    </div>
+
+     {% load static %}
+     <!-- jQuery -->
+     <script type="text/javascript" src="{% static 'js/jquery.min.js'%}"></script>
+     <!-- 文件拖拽上传插件 -->
+     <script type="text/javascript" src="{% static 'js/dropzone.js'%}"></script>
+     <!-- Markdown插件 -->
+     <script type="text/javascript" src="{% static 'js/showdown.min.js'%}"></script>
+     <!-- 图片旋转插件 -->
+     <script type="text/javascript" src="{% static 'js/jquery.rotate.min.js'%}"></script>
+
+     <script>
+         // 格式化字符串format函数
+         String.prototype.format = function(args) {
+            var result = this;
+            if (arguments.length > 0) {
+                if (arguments.length == 1 && typeof (args) == "object") {
+                    for (var key in args) {
+                        if(args[key]!=undefined){
+                            var reg = new RegExp("({" + key + "})", "g");
+                            result = result.replace(reg, args[key]);
+                        }
+                    }
+                }
+                else {
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (arguments[i] != undefined) {
+                            var reg= new RegExp("({)" + i + "(})", "g");
+                            result = result.replace(reg, arguments[i]);
+                        }
+                    }
+                }
+            }
+            return result;
+         };
+
+         // 显示器可用的工作高度
+         screen_height = window.screen.availHeight  ;
+
+         // 网页正文所用高度
+         height = document.body.scrollHeight ;
+
+         if(height < screen_height -50){
+             $('.foot').css({
+                 "position":"fixed",
+                 "bottom":"0",
+             })
+         }
+
+         // 图片上传等待效果函数
+         var upload_image = function(){
+             var t1 = $(window).height();
+             var t2 = $(window).width();
+             var t3 = $(document).scrollTop();
+
+             $('.xz-box').css({
+                 "position": "absolute",
+                 "height": t1 + t3 + 500,
+                 "width": t2,
+                 "background-color": "rgba(192, 192, 192 , 0.6)",
+                 "padding-top": (t1-50) / 2 + t3,
+                 "padding-left": (t2-50) / 2,
+                 "z-index": 2,
+             });
+             $('.xz-box span').css({
+                 "position": "absolute",
+                 "left": t2 / 2 - 60,
+                 "top": t1 / 2 + 30 + t3,
+             });
+
+             var rotation2 = function(){
+                 $('#xuanzhuan').rotate({
+                    angle: 0,
+                    animateTo: 360,
+                    callback: rotation2,
+                    easing: function(x,t,b,c,d){
+                        return c*(t/d)+b;
+                    }
+                 });
+             };
+             rotation2();
+         };
+
+         //markdown
+         function compile(){
+            var text = $('#content').val();
+            var converter = new showdown.Converter();
+            var html = converter.makeHtml(text);
+            $('#result').html(html);
+
+        }
+
+        // 文章上传
+        $('#upload').click(function () {
+            // 获取文章标题
+            var name = $('#article-name').val();
+            // 获取文章内容并转换为markdown
+            var text = $('#content').val();
+            var converter = new showdown.Converter();
+            var html = converter.makeHtml(text);
+            var data = {
+                name:name,
+                content:html,
+            };
+            $.ajax({
+                url:"{% url 'save' %}",
+                type:"POST",
+                data:JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success:function (data) {
+                    if (data["result"] == 'ok'){
+                        alert('上传成功！');
+                        window.location.href = "{% url 'home' %}";
+                    }else{
+                        alert('上传失败！');
+                    }
+
+                },
+                error:function () {
+                    alert('服务器出错！');
+                }
+
+            })
+        });
+
+        // 图片拖拽上传
+        $('body').dropzone({
+            url: "{% url 'save_image' %}",
+            paramName: "image",
+            clickable: false,
+            init: function() {
+                // 拖拽图片触发的事件
+                this.on("addedfile", function (file) {
+                    // 禁用滚动条
+                    $('body').css("overflow", "hidden");
+                    // 设置等待上传效果
+                    upload_image();
+
+                    // 将拖拽上传图片预览设为不可见
+                    $('.dz-preview').css("display","none");
+                    // 将等待上传效果设为可见
+                    $('.xz-box').css("display","inherit");
+                });
+                // 图片上传成功触发的事件
+                this.on("success", function(file, data) {
+                    var image_name = file.name.split('.')[0];
+                    if(data['result'] == 'ok'){
+                        var image_str = "![{0}]({1} ={2}x{3})";
+                        // 取出markdown编辑框已输入内容
+                        var content = $('#content').val();
+
+                        var image_width = "*";
+                        if(file.width > 790){
+                            image_width = 790;
+                        }
+
+                        // 判断已取出的内容是否为空
+                        if(content.length == 0){
+                            content = image_str.format(image_name, data['path'], image_width, "*");
+                        }else{
+                            // 判断已取出的内容最后一个字符是否为换行符
+                            if(content.charAt(content.length - 1) == "\n"){
+                                content += ('\n' + image_str.format(image_name, data['path'], image_width, "*"));
+                            }else{
+                                content += ('\n\n' + image_str.format(image_name, data['path'], image_width, "*"));
+                            }
+                        }
+
+                        // 重新赋值编辑框内容
+                        $('#content').val(content);
+                        // 移除拖拽上传插件预览图片
+                        $('.dz-preview').remove();
+                        // 将上传等待效果设置为不可见
+                        $('.xz-box').css("display","none");
+                        // 启用滚动条
+                        $('body').css("overflow", "auto");
+
+                        // 刷新展示框内容
+                        var text = $('#content').val();
+                        var converter = new showdown.Converter();
+                        var html = converter.makeHtml(text);
+                        $('#result').html(html);
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>
