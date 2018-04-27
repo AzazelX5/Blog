@@ -1,31 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>导航栏</title>
-    <!-- Bootstrap -->
-    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+{% extends "base.html" %}
 
+{% block title %}发表文章{% endblock %}
+
+{% block content %}
     <style>
-        *{
-            margin: 0;
-            padding: 0;
-        }
-        .top{
-            height: 155px;
-            border: crimson 1px solid;
-        }
-        .middle{
-            margin: 0 65px;
-            border: burlywood 1px solid;
-        }
-        .foot{
-            width: 100%;
-            height: 50px;
-            border: blueviolet 1px solid;
-        }
         .edit-result-box{
             height: 600px;
             width: 100%;
@@ -47,17 +25,11 @@
             display: none;
         }
     </style>
-</head>
-<body>
+
     {% load static %}
     <div class="xz-box">
         <img id="xuanzhuan" src="{% static 'images/xuanzhuan.png'%}" height="50" width="50">
         <span>上传中,请稍等。。。</span>
-    </div>
-
-    <!-- 导航栏 -->
-    <div class="top">
-        {% include 'nav.html' %}
     </div>
 
     <!-- 内容 -->
@@ -96,11 +68,6 @@
 
     </div>
 
-    <!-- 底部信息栏 -->
-    <div class="foot">
-        {% include 'foot.html' %}
-    </div>
-
      {% load static %}
      <!-- jQuery -->
      <script type="text/javascript" src="{% static 'js/jquery.min.js'%}"></script>
@@ -108,34 +75,8 @@
      <script type="text/javascript" src="{% static 'js/dropzone.js'%}"></script>
      <!-- Markdown插件 -->
      <script type="text/javascript" src="{% static 'js/showdown.min.js'%}"></script>
-     <!-- 图片旋转插件 -->
-     <script type="text/javascript" src="{% static 'js/jquery.rotate.min.js'%}"></script>
 
      <script>
-         // 底部信息位置
-         var foot_place = function(){
-             // 显示器可用的工作高度
-             inner_height = window.innerHeight ;
-
-             // 网页正文所用高度
-             height = document.body.scrollHeight ;
-
-             if(height < inner_height - 50){
-                 $('.foot').css({
-                     "position":"fixed",
-                     "bottom":"0",
-                 })
-             }
-         };
-         // 网页加载完成时
-         $(window).load(function () {
-             foot_place();
-         });
-         // 窗口大小改变时
-         $(window).resize(function () {
-             foot_place();
-         });
-
          // 格式化字符串format函数
          String.prototype.format = function(args) {
             var result = this;
@@ -160,7 +101,16 @@
             return result;
          };
 
-         // 图片上传等待效果函数
+         //markdown
+         function compile(){
+            var text = $('#content').val();
+            var converter = new showdown.Converter();
+            var html = converter.makeHtml(text);
+            $('#result').html(html);
+
+        }
+
+        // 图片上传等待效果函数
          var upload_image = function(){
              var t1 = $(window).height();
              var t2 = $(window).width();
@@ -169,16 +119,20 @@
              $('.xz-box').css({
                  "position": "absolute",
                  "height": t1 + t3 + 500,
-                 "width": t2,
+                 "width": t2 + 65,
+                 "left": "-65px",
+                 "top": "-155px",
                  "background-color": "rgba(192, 192, 192 , 0.6)",
-                 "padding-top": (t1-50) / 2 + t3,
-                 "padding-left": (t2-50) / 2,
+                 "padding-top": (t1-50) / 2 + t3 + 130,
+                 "padding-left": (t2-50) / 2 + 65,
                  "z-index": 2,
              });
              $('.xz-box span').css({
                  "position": "absolute",
-                 "left": t2 / 2 - 60,
-                 "top": t1 / 2 + 30 + t3,
+                 "left": t2 / 2 - 60 + 25,
+                 "top": t1 / 2 + 30 + t3 + 140,
+                 "font-size": "30px",
+                 "color": "darkorange",
              });
 
              var rotation2 = function(){
@@ -194,15 +148,6 @@
              rotation2();
          };
 
-         //markdown
-         function compile(){
-            var text = $('#content').val();
-            var converter = new showdown.Converter();
-            var html = converter.makeHtml(text);
-            $('#result').html(html);
-
-        }
-
         // 文章上传
         $('#upload').click(function () {
             // 获取文章标题
@@ -216,7 +161,7 @@
                 content:html,
             };
             $.ajax({
-                url:"{% url 'save' %}",
+                url:"{% url 'save_article' %}",
                 type:"POST",
                 data:JSON.stringify(data),
                 dataType: "json",
@@ -224,7 +169,7 @@
                 success:function (data) {
                     if (data["result"] == 'ok'){
                         alert("上传成功！");
-                        window.location.href = "http://0.0.0.0:8000/blog/article?uuid={0}".format(data.uuid);
+                        window.location.href = "http://0.0.0.0:8000/blog/article/{0}/".format(data.uuid);
                     }else{
                         alert('上传失败！');
                     }
@@ -239,7 +184,7 @@
 
         // 图片拖拽上传
         $('body').dropzone({
-            url: "{% url 'save_image' %}",
+            url: "{% url 'upload_image' %}",
             paramName: "image",
             clickable: false,
             init: function() {
@@ -299,6 +244,4 @@
             }
         });
     </script>
-
-</body>
-</html>
+{% endblock %}

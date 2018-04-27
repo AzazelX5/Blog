@@ -1,0 +1,48 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    body{
+        font-size: 14px;
+        line-height: 20px;
+        /*color: #555;*/
+        background-color: #eee;
+    }
+    /* 清除a 标签样式*/
+    a,a:hover,a:visited,a:link{ text-decoration:none; color:#333}
+    /* 广告样式 */
+    .ad-box{
+        /*border: blanchedalmond 1px solid;*/
+        height: 30px;
+    }
+    /* 网页正文左边样式 */
+    .left-box{
+        /*border: deepskyblue 1px solid;*/
+    }
+    /* 网页正文右边样式 */
+    .right-box{
+        border: darkgreen 1px solid;
+    }
+</style>
+<div class="container-fluid">
+    <!-- 广告 -->
+    <div class="row ad-box text-center">
+        <div class="col-md-12">
+            {% include 'advertisement.html' %}
+        </div>
+    </div>
+
+    <!-- 页面主体 -->
+    <div class="row">
+        <!-- 左边文章列表 -->
+        <div class="col-md-8 left-box">
+            {% block left_content %}{% endblock %}
+        </div>
+        <!-- 右边信息区 -->
+        <div class="col-md-4 right-box">
+            {% include 'right_info.html' %}
+        </div>
+    </div>
+</div>
+

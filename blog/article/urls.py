@@ -13,19 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 
 urlpatterns = [
-    path('welcome/', views.index),
-    path('home/', views.home, name='home'),
-    path('save/', views.save_article, name='save'),
-    path('get/<uuid:uuid>/', views.get_article, name='get'),
-    path('article/', views._get_article, name='article'),
-    path('edit/', views.edit_article, name='edit'),
-    path('login/', views.login_html, name='login'),
-    path('save_image/', views.save_image, name='save_image'),
-    path('log_in/', views.log_in, name='log_in'),
-    path('registration/', views.registration, name='registration'),
-    path('registration_page/', views.registration_html, name='registration_page')
+    # 主页
+    path('home/', views.home_view, name='home'),
+    # 文章页面
+    path('article/<uuid:uuid>/', views.get_article_view, name='article'),
+    # 保存文章
+    path('save_article/', views.save_article_view, name='save_article'),
+    # 登录功能
+    path('log_in/', views.log_in_view, name='log_in'),
+    # 注销功能
+    path('log_out/', views.log_out_view, name='log_out'),
+    # 注册功能
+    path('sign_up/', views.sign_up_view, name='sign_up'),
+    # 上传图片
+    path('upload_image/', views.upload_image_view, name='upload_image'),
+    # 适配简单页面，如访问welcome、login、registration等不需要传递参数的页面
+    path('<str:url>/', views.adaptive_view, name='adaptive'),
 ]

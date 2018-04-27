@@ -67,7 +67,7 @@
     </style>
 
     <div class="login_box center-block">
-        <form class="form-horizontal" action="{% url 'registration' %}" method="post">
+        <form class="form-horizontal" action="{% url 'sign_up' %}" method="post">
             <!-- 昵称输入框 -->
             <div class="form-group user">
                 <div class="col-sm-12 input-group">
@@ -166,7 +166,7 @@
 
                 <!-- 已有账号，直接登录框 -->
                 <div class="go-login">
-                    <a href="{% url 'login' %}">已有账号，直接登录 -></a>
+                    <a href="{% url 'adaptive' 'login' %}">已有账号，直接登录 -></a>
                 </div>
             </div>
 

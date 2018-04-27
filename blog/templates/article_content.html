@@ -1,0 +1,26 @@
+{% extends "base_content.html" %}
+{% block left_content %}
+    <style>
+        .article-name{
+            border: deeppink 1px solid;
+        }
+        .article{
+            border: forestgreen 1px solid;
+        }
+    </style>
+    <div class="article-name text-center">
+        <h3>{{ article.name }}</h3>
+    </div>
+    <div class="article">
+        {{ article.content }}
+    </div>
+
+     <script>
+         $(document).ready(function () {
+             var text = $('.article').text();
+             $('.article').html(text);
+             $('.article').css("display", "inherit");
+         });
+
+    </script>
+{% endblock %}

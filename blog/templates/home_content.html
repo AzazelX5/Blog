@@ -1,0 +1,152 @@
+{% extends "base_content.html" %}
+{% block left_content %}
+    <style>
+        /* 文章列表样式 */
+        .excerpt {
+            background-color: #fff;
+            padding: 20px 15px 20px 20px;
+            margin-bottom: 10px;
+            position: relative;
+            clear: both;
+        }
+
+        /* 文章标题前标签样式 */
+        .excerpt header a{
+            position: relative;
+            bottom: 10px;
+        }
+        /* 文章标题整体样式 */
+        .excerpt h2 {
+            display: inline;
+            font-weight: normal;
+            position: relative;
+            top: 3px;
+            line-height: 25px;
+            margin-left: 20px;
+        }
+        /* 文章标题内容样式 */
+        .excerpt h2 span{
+            color: deepskyblue;
+            font-size: 25px;
+        }
+        /* 中部左边图片整体样式 */
+        .excerpt .focus {
+            float: left;
+            overflow: hidden;
+            margin: 5px 20px 0 0;
+        }
+        .excerpt .focus a img {
+            transition: all 0.6s;
+        }
+        .excerpt .focus a img:hover{
+            transform: scale(1.2);
+        }
+        .excerpt .note {
+            color: #777;
+            line-height: 24px;
+            margin-bottom: 0;
+            font-style: normal;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 4;
+            overflow: hidden;
+        }
+
+        .excerpt p{
+            clear: both;
+        }
+        .excerpt .article-info .muted{
+            float: right;
+            margin-right: 20px;
+        }
+    </style>
+    {% for article in article_list %}
+        <article class="excerpt">
+            <!--::before-->
+            <!-- 顶部文章标题区 -->
+            <header>
+                <!-- 文章标签 -->
+                <a href="#">
+                    <span id="label-name" class="label label-info" style="font-size: 18px">python</span>
+                </a>
+                <h2>
+                    <a href="{% url 'article' article.uuid %}">
+                        <span>{{article.name}}</span>
+                    </a>
+                </h2>
+            </header>
+            <!-- 中部左边图片 -->
+            <div class="focus">
+                <a href="{% url 'article' article.uuid %}">
+                    {% load static %}
+                    <img src="{% static 'images/python.jpg'%}" width="200" height="120">
+                </a>
+            </div>
+            <!-- 中部右边简介 -->
+            <span class="note">
+                {{article.content}}
+            </span>
+            <!-- 底部文章信息区 -->
+            <p class="article-info">
+                <span class="muted">
+                    <a href="#">
+                        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                        <span>评论(0)</span>
+                    </a>
+                </span>
+                <span class="muted">
+                    <a href="#">
+                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                        <span style="color: crimson">好评(0)</span>
+                    </a>
+                </span>
+                <span class="muted">
+                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                    <span>浏览量(0)</span>
+                </span>
+                <span class="muted">
+                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                    <span>时间</span>
+                </span>
+                <span class="muted">
+                    <a href="#">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        <span style="color: forestgreen">{{article.author.name}}</span>
+                    </a>
+                </span>
+                <span class="muted">
+                    <a href="#">
+                        <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
+                        <span>分享</span>
+                    </a>
+                </span>
+            </p>
+            <!--::after-->
+        </article>
+    {% endfor %}
+    <script>
+        function removeHTMLTag(str) {
+
+            str = str.replace(/<\/?[^>]*>/g,''); //去除HTML tag
+            str = str.replace(/[ | ]*\n/g,'\n'); //去除行尾空白
+            //str = str.replace(/\n[\s| | ]*\r/g,'\n'); //去除多余空行
+            str=str.replace(/&nbsp;/ig,'');//去掉&nbsp;
+            str=str.replace(/\s/g,''); //将空格去掉
+            return str;
+    }
+        $(document).ready(function () {
+            $('.note').each(function () {
+                var text = $(this).text();
+                text = removeHTMLTag(text);
+                if($(this).height() / 24 <= 4){
+                    if($(this).length < 50){
+                        text += "...";
+                    }else{
+                        text = text.slice(0, -3) + "...";
+                    }
+                }
+                $(this).text(text);
+            });
+         });
+    </script>
+{% endblock %}

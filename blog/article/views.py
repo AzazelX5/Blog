@@ -1,6 +1,6 @@
 # coding:utf-8
 
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render
 import json
 import os
 import uuid
@@ -14,73 +14,53 @@ from . import models
 # Create your views here.
 
 
-def index(request):
-    return render_to_response('welcome.html')
-
-
-def home(request):
-    if request.session.get('name'):
-        del request.session['name']
-    else:
-        request.session['name'] = 'Azazel'
-    artice = models.Article.objects.order_by("-create_time")
-    return render(request, 'home.html', {'article_list': list(artice)})
-
-
-def save_article(request):
-    if request.method == 'POST':
-        print(request.body)
-        article_dict = json.loads(request.body)
-        author  = models.Author.objects.get(name='Azazel')
-        article = models.Article.objects.create(
-            name=article_dict['name'],
-            content=article_dict['content'],
-            category="Python",
-            author=author,
-        )
-        data = {
-            'result': 'ok',
-            'uuid': article.uuid,
-        }
-        return JsonResponse(data)
-
-
-def get_article(request, uuid):
-    print(uuid)
+def adaptive_view(request, url):
+    """
+    适配简单页面视图
+    :param request:
+    :param url: 页面url前缀
+    :return:
+    """
     if request.method == 'GET':
-        artice = models.Article.objects.get(uuid=uuid)
-        name = artice.name
-        content = artice.content
-        return render_to_response('article.html', {'name': name, 'content': content})
+        url_str = '{0}.html'
+        print(url)
+        return render(request, url_str.format(url))
 
 
-def _get_article(request):
-    print(11111)
+def home_view(request):
+    """
+    主页视图
+    :param request:
+    :return:
+    # """
+    # if request.session.get('name'):
+    #     del request.session['name']
+    # else:
+    #     request.session['name'] = 'Azazel'
+    article_list = models.Article.objects.order_by("-create_time")
+
+    return render(request, 'home.html', {'article_list': list(article_list)})
+
+
+def get_article_view(request, uuid):
+    """
+    展示文章页面视图
+    :param request:
+    :param uuid: 文章uuid
+    :return:
+    """
     if request.method == 'GET':
-        uuid = request.GET.get('uuid')
-        artice = models.Article.objects.get(uuid=uuid)
-        name = artice.name
-        content = artice.content
-        return render_to_response('article.html',
-                                  {'name': name, 'content': content})
+        article = models.Article.objects.get(uuid=uuid)
+
+        return render(request, 'article.html', {'article': article})
 
 
-def edit_article(request):
-    if request.method == 'GET':
-        return render_to_response('edit_article.html')
-
-
-def login_html(request):
-    if request.method == 'GET':
-        return render_to_response('log_in.html')
-
-
-def registration_html(request):
-    if request.method == 'GET':
-        return render_to_response('registration.html')
-
-
-def save_image(request):
+def upload_image_view(request):
+    """
+    上传图片视图
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
         # 获取文件对象
         image = request.FILES.get('image')
@@ -96,7 +76,7 @@ def save_image(request):
 
         data = {
             'result': 'ok',
-            'path': 'http://frptest.nodes.studio:8080//{0}'.format(path)
+            'path': 'http://0.0.0.0:8000/{0}'.format(path)
         }
 
         time.sleep(2)
@@ -104,7 +84,35 @@ def save_image(request):
         return JsonResponse(data)
 
 
-def log_in(request):
+def save_article_view(request):
+    """
+    发表文章视图
+    :param request:
+    :return:
+    """
+    if request.method == 'POST':
+        print(request.body)
+        article_dict = json.loads(request.body)
+        author = models.Author.objects.get(name='Azazel')
+        article = models.Article.objects.create(
+            name=article_dict['name'],
+            content=article_dict['content'],
+            category="Python",
+            author=author,
+        )
+        data = {
+            'result': 'ok',
+            'uuid': article.uuid,
+        }
+        return JsonResponse(data)
+
+
+def log_in_view(request):
+    """
+    登录功能视图
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
         user = request.POST['user']
         password = request.POST['password']
@@ -115,30 +123,43 @@ def log_in(request):
             password=password,
         ).first()
 
-        # if password == author.password:
-        #     status = True
-        #     reason = "登录成功"
-        # else:
-        #     status = False
-        #     reason = "密码不正确"
-
         if author:
             request.session['name'] = author.name
             status = True
             reason = "登录成功"
         else:
             status = False
-            reason = "密码不正确"
+            reason = "账号或密码输入有误"
 
         result = {
             "status": status,
             "reason": reason,
-
         }
-        return render_to_response('prompt.html', {'result': result})
+        return render(request, 'prompt.html', {'result': result})
 
 
-def registration(request):
+def log_out_view(request):
+    """
+    注销功能视图
+    :param request:
+    :return:
+    """
+    if request.method == 'GET':
+        del request.session['name']
+
+        result = {
+            "status": True,
+            "reason": "注销成功",
+        }
+        return render(request, 'prompt.html', {'result': result})
+
+
+def sign_up_view(request):
+    """
+    注册功能视图
+    :param request:
+    :return:
+    """
     if request.method == 'POST':
         email_str = '{0}@{1}'
 
@@ -158,10 +179,10 @@ def registration(request):
             password=password,
             email=email
         )
-        print(author)
+        request.session['name'] = author.name
         result = {
             "status": True,
             "reason": "注册成功",
 
         }
-        return render_to_response('prompt.html', {'result': result})
+        return render(request, 'prompt.html', {'result': result})
