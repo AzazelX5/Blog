@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}注册{% endblock %}
+
+{% block content %}
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        /* 清除a 标签样式*/
+        a,a:hover,a:visited,a:link{ text-decoration:none; color:#333}
+        .login_box{
+            width: 350px;
+            margin-top: 50px;
+        }
+        .form-group{
+            position: relative;
+        }
+        .tips{
+            position: absolute;
+            left: 410px;
+            top: 2px;
+            width: 200px;
+        }
+        .remember_password label{
+            margin-left: 15px;
+            float: left;
+        }
+        .remember_password a{
+            float: right;
+            margin-right: -15px;
+            color: deepskyblue;
+        }
+        .remember_password a:hover{
+            color: deeppink;
+        }
+        .btn-register{
+            width: 100%;
+            margin-top: 20px;
+        }
+        .suffix{
+            width: 115px;
+            margin-right: -10px;
+            display: none;
+        }
+        #inputCode{
+            width: 188px;
+        }
+        .btn-code{
+            width: 115px;
+            float: right;
+            margin-top: -34px;
+        }
+        .btn-code button{
+            width: 100%;
+        }
+        .go-login a{
+            margin-top: 10px;
+            margin-right: 16px;
+            float: right;
+            color: deepskyblue;
+        }
+        .go-login a:hover{
+            color: deeppink;
+        }
+    </style>
+
+    <div class="login_box center-block">
+        <form class="form-horizontal" action="{% url 'registration' %}" method="post">
+            <!-- 昵称输入框 -->
+            <div class="form-group user">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </span>
+                    <input name="user" type="text" class="form-control" id="inputUser" aria-describedby="inputUserStatus" placeholder="昵称"/>
+                </div>
+                <div class="tips">
+                    <span id="inputUserStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 密码输入框 -->
+            <div class="form-group password">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    </span>
+                    <input name="password" type="password" class="form-control" id="inputPassword" aria-describedby="inputPasswordStatus" placeholder="密码（8-16个字符组成）"/>
+                </div>
+                <div class="tips">
+                    <span id="inputPasswordStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 验证密码输入框 -->
+            <div class="form-group password-verify">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    </span>
+                    <input name="password-verify" type="password" class="form-control" id="inputPasswordVerify" aria-describedby="inputPasswordVerifyStatus" placeholder="确认密码"/>
+                </div>
+                <div class="tips">
+                    <span id="inputPasswordVerifyStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 邮箱输入框 -->
+            <div class="form-group email">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                    </span>
+                    <input name="email" type="text" class="form-control" id="inputEmail" aria-describedby="inputEmailStatus" placeholder="填写常用邮箱名称"/>
+                    <span class="input-group-addon">@</span>
+                    <select name="email_default_suffix" class="form-control">
+                        <option id="select">请选择...</option>
+                        <option>gmail.com</option>
+                        <option>live.cn</option>
+                        <option>live.com</option>
+                        <option>qq.com</option>
+                        <option>outlook.com</option>
+                        <option>hotmail.com</option>
+                        <option>163.com</option>
+                        <option>yahoo.com</option>
+                        <option>其他...</option>
+                    </select>
+                    <div class="suffix">
+                        <input name="email_suffix" type="text" class="form-control" placeholder="邮箱后缀">
+                    </div>
+                </div>
+                <div class="tips">
+                    <span id="inputEmailStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 验证码输入框 -->
+            <div class="form-group code">
+                <div class="col-sm-8 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-text-background" aria-hidden="true"></span>
+                    </span>
+                    <input name="code" type="text" class="form-control" id="inputCode" aria-describedby="inputCodeStatus" placeholder="填写邮箱收到的6位验证码"/>
+                </div>
+                <div class="btn-code">
+                        <button type="button" class="btn btn-info">点击获取</button>
+                </div>
+                <div class="tips">
+                    <span id="inputCodeStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <!-- 同意条款选择框 -->
+                <div class="checkbox">
+                    <label>
+                        <input name="agree" type="checkbox" id="checkboxSuccess" value="option1">
+                        同意条款
+                    </label>
+                </div>
+
+                <!-- 注册按钮 -->
+                <input type="submit" class="btn btn-info btn-register"  value="注册"> <!-- disabled="disabled" -->
+
+                <!-- 已有账号，直接登录框 -->
+                <div class="go-login">
+                    <a href="{% url 'login' %}">已有账号，直接登录 -></a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        $(function () {
+            // email后缀初始颜色设置和选择 "其他" 切换成输入框
+            $('select').css("color", "#999");
+            $('select').bind('change', function () {
+                $(this).css("color", "rgb(85, 85, 85)");
+
+                if($(this).val() == "请选择..."){
+                    $(this).css("color", "#999");
+                }
+
+                if($(this).val() == '其他...'){
+                    $(this).hide();
+                    $('.suffix').show();
+                }
+            });
+
+            var user_status = false;
+            var password_status = false;
+            var password;
+            //监控账号框的变化
+            $('#inputUser').live("click input propertychange change", function () {
+                if($('#inputUser').val().length >= 6){
+                    $('.user').addClass("has-success");
+                    $('.user').removeClass("has-error");
+                    $('#inputUserStatus').text("账号格式正确")
+
+                    user_status = true;
+                    if(password_status){
+                        $('.btn-login').removeAttr("disabled");
+                    }
+
+                }else if($('#inputUser').val().length == 0){
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    $('#inputUserStatus').text("账号不能为空")
+
+                    user_status = false;
+                    $('.btn-login').attr("disabled","disabled");
+
+                }else{
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    $('#inputUserStatus').text("账号长度必须大于6")
+
+                    user_status = false;
+                    $('.btn-login').attr("disabled","disabled");
+                }
+            });
+            // 监听密码框的变化
+            $('#inputPassword, #inputPasswordShow').live("click input change propertychange", function () {
+                // debugger
+                if($(this).css("display") != "none"){
+                    if($(this).val().length >= 8){
+                        $('.password').addClass("has-success");
+                        $('.password').removeClass("has-error");
+                        $('#inputPasswordStatus').text("密码格式正确")
+
+                        $('.view').removeClass("sr-only");
+
+                        password_status = true;
+                        if(user_status){
+                            $('.btn-login').removeAttr("disabled");
+                        }
+                    }else if($(this).val().length == 0){
+                        $('.password').addClass("has-error");
+                        $('.password').removeClass("has-success");
+                        $('#inputPasswordStatus').text("密码不能为空")
+
+                        $('.view').addClass("sr-only");
+
+                        password_status = false;
+                        $('.btn-login').attr("disabled","disabled");
+                    }else{
+                        $('.password').addClass("has-error");
+                        $('.password').removeClass("has-success");
+                        $('#inputPasswordStatus').text("密码长度必须大于8")
+
+                        $('.view').removeClass("sr-only");
+
+                        password_status = false;
+                        $('.btn-login').attr("disabled","disabled");
+                    }
+                    password = $(this).val();
+                }
+            });
+        });
+    </script>
+{% endblock %}

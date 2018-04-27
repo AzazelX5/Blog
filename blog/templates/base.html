@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .top{
+            height: 155px;
+        }
+        .middle{
+            margin: 0 65px;
+        }
+        .foot{
+            width: 100%;
+            height: 50px;
+            border: blueviolet 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="top">
+        {% include 'nav.html' %}
+    </div>
+
+    <!-- 内容 -->
+    <div class="middle">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- 底部信息栏 -->
+    <div class="foot">
+        {% include 'foot.html' %}
+    </div>
+
+    {% load static %}
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script type="text/javascript" src="{% static 'js/jquery.min.js'%}"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+     <script>
+         // 底部信息位置
+         var foot_place = function(){
+             // 显示器可用的工作高度
+             inner_height = window.innerHeight ;
+
+             // 网页正文所用高度
+             height = document.body.scrollHeight ;
+
+             if(height < inner_height - 50){
+                 $('.foot').css({
+                     "position":"fixed",
+                     "bottom":"0",
+                 })
+             }
+         };
+
+         var change_nav = function(){
+             var _width = $(window).width();
+             if(_width < 950){
+                 $('.nav-box').css({
+                    "left": 0,
+                    "right": 0,
+                 });
+                 $('.top-box p').hide();
+             }
+             if(_width > 950){
+                 $('.nav-box').css({
+                    "left": 80,
+                    "right": 80,
+                 });
+                 $('.top-box p').show();
+             }
+             if(_width < 500){
+                 $('.first-word').css("left", "40%");
+                 $('.second-word').css("left", "45%");
+             }
+             if(_width > 500){
+                 $('.first-word').css("left", "44%");
+                 $('.second-word').css("left", "55%");
+             }
+             if(_width < 400){
+                 $('.first-word').css("left", "40%");
+                 $('.second-word').css("left", "40%");
+             }
+             if(_width > 400){
+                 $('.first-word').css("left", "40%");
+                 $('.second-word').css("left", "45%");
+             }
+         };
+         // 网页加载完成时
+         $(window).load(function () {
+             foot_place();
+             change_nav();
+             // 判断登录状态
+             var login_status_name = "{{ request.session.name }}";
+             if(login_status_name == ""){
+                 $('#login_status').text("未登录！");
+             }else{
+                 $('#login_status').text(login_status_name);
+             }
+         });
+         // 窗口大小改变时
+         $(window).resize(function () {
+             foot_place();
+             change_nav();
+         });
+    </script>
+</body>
+</html>

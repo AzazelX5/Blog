@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        /* 清除a 标签样式*/
+        a,a:hover,a:visited,a:link{ text-decoration:none; color:#333}
+        .login_box{
+            width: 300px;
+            margin-top: 50px;
+        }
+        .form-group{
+            position: relative;
+        }
+        .tips{
+            position: absolute;
+            left: 350px;
+            top: 2px;
+            width: 200px;
+            /*border: deepskyblue 1px solid;*/
+        }
+        .view{
+            position: absolute;
+            left: 305px;
+            bottom: 5px;
+            z-index: 2;
+        }
+        .view:hover{
+            cursor: pointer;
+        }
+        #inputPasswordShow{
+            display: none;
+        }
+        .btn-login{
+            width: 100%;
+            margin-top: 20px;
+        }
+        .find-pass {
+            float: right;
+        }
+        .find-pass a{
+            color: deepskyblue;
+        }
+        .go-registration a{
+            margin-top: 10px;
+            float: right;
+            color: deepskyblue;
+        }
+        .a-color:hover{
+            color: deeppink;
+        }
+        .btn-code{
+            width: 115px;
+            float: right;
+            margin-top: -34px;
+        }
+        .btn-code button{
+            width: 100%;
+        }
+    </style>
+
+    <div class="login_box center-block">
+        <form class="form-horizontal" action="{% url 'log_in' %}" method="post">
+            <!-- 昵称 -->
+            <div class="form-group user">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </span>
+                    <input name="user" type="text" class="form-control" id="inputUser" aria-describedby="inputUserStatus" placeholder="昵称 / 邮箱"/>
+                </div>
+                <div class="tips">
+                    <span id="inputUserStatus" class="help-block"></span>
+                </div>
+            </div>
+            <!-- 密码 -->
+            <div class="form-group password">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    </span>
+                    <input name="password" type="password" class="form-control" id="inputPassword" aria-describedby="inputPasswordStatus" placeholder="请输入密码"/>
+                    <input name="password_show" type="text" class="form-control" id="inputPasswordShow" aria-describedby="inputPasswordStatus" placeholder="请输入密码"/>
+                </div>
+                <div class="view sr-only">
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    </div>
+                <div class="tips">
+                    <span id="inputPasswordStatus" class="help-block"></span>
+                </div>
+            </div>
+             <!-- 验证码输入框 -->
+            <div class="form-group code">
+                <div class="col-sm-7 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                    </span>
+                    <input name="code" type="text" class="form-control" id="inputCode" aria-describedby="inputCodeStatus" placeholder="填写验证码"/>
+                </div>
+                <div class="btn-code">
+                        <button type="button" class="btn btn-info">点击获取</button>
+                </div>
+                <div class="tips">
+                    <span id="inputCodeStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <!-- 同意条款选择框 -->
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="checkboxSuccess" value="option1">
+                        同意条款
+                    </label>
+
+                    <div class="find-pass">
+                        <a href="#" class="a-color">找回密码</a>
+                    </div>
+                </div>
+
+                <!-- 注册按钮 -->
+                <input type="submit" class="btn btn-info btn-login" disabled="disabled" value="登录">
+
+                <!-- 已有账号，直接登录框 -->
+                <div class="go-registration">
+                    <a href="{% url 'registration_page' %}" class="a-color">没有账号，点击注册 -></a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% load static %}
+     <!-- jQuery -->
+     <!--<script type="text/javascript" src="{% static 'js/jquery.min.js'%}"></script>-->
+
+    <script>
+        $(function () {
+            $('#inputUser').click();
+            var user_status = false;
+            var password_status = false;
+            var password;
+            //监控账号框的变化
+            $('#inputUser').live("click input propertychange change", function () {
+                if($('#inputUser').val().length >= 6){
+                    $('.user').addClass("has-success");
+                    $('.user').removeClass("has-error");
+                    $('#inputUserStatus').text("账号格式正确")
+
+                    user_status = true;
+                    if(password_status){
+                        $('.btn-login').removeAttr("disabled");
+                    }
+
+                }else if($('#inputUser').val().length == 0){
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    $('#inputUserStatus').text("账号不能为空")
+
+                    user_status = false;
+                    $('.btn-login').attr("disabled","disabled");
+
+                }else{
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    $('#inputUserStatus').text("账号长度必须大于6")
+
+                    user_status = false;
+                    $('.btn-login').attr("disabled","disabled");
+                }
+            });
+            // 监听密码框的变化
+            $('#inputPassword, #inputPasswordShow').live("click input change propertychange", function () {
+                // debugger
+                if($(this).css("display") != "none"){
+                    if($(this).val().length >= 8){
+                        $('.password').addClass("has-success");
+                        $('.password').removeClass("has-error");
+                        $('#inputPasswordStatus').text("密码格式正确")
+
+                        $('.view').removeClass("sr-only");
+
+                        password_status = true;
+                        if(user_status){
+                            $('.btn-login').removeAttr("disabled");
+                        }
+                    }else if($(this).val().length == 0){
+                        $('.password').addClass("has-error");
+                        $('.password').removeClass("has-success");
+                        $('#inputPasswordStatus').text("密码不能为空")
+
+                        $('.view').addClass("sr-only");
+
+                        password_status = false;
+                        $('.btn-login').attr("disabled","disabled");
+                    }else{
+                        $('.password').addClass("has-error");
+                        $('.password').removeClass("has-success");
+                        $('#inputPasswordStatus').text("密码长度必须大于8")
+
+                        $('.view').removeClass("sr-only");
+
+                        password_status = false;
+                        $('.btn-login').attr("disabled","disabled");
+                    }
+                    password = $(this).val();
+                }
+            });
+            // 点击 显示/隐藏 密码
+            $('.view').click(function () {
+                if($('.view span').attr("class") == "glyphicon glyphicon-eye-close"){
+                    $('.view span').removeClass("glyphicon-eye-close");
+                    $('.view span').addClass("glyphicon-eye-open");
+
+                    // var password = $('#inputPassword').val();
+
+                    $('#inputPassword').hide();
+                    $('#inputPasswordShow').show();
+
+                    $('#inputPasswordShow').val(password);
+                    $('#inputPassword').val(password);
+
+                }else{
+                    $('.view span').removeClass("glyphicon-eye-open");
+                    $('.view span').addClass("glyphicon-eye-close");
+
+                    // var password = $('#inputPasswordShow').val();
+                    $('#inputPasswordShow').hide();
+                    $('#inputPassword').show();
+
+                    $('#inputPasswordShow').val(password);
+                    $('#inputPassword').val(password);
+                }
+            });
+        });
+    </script>
+{% endblock %}

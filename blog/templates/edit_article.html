@@ -112,6 +112,30 @@
      <script type="text/javascript" src="{% static 'js/jquery.rotate.min.js'%}"></script>
 
      <script>
+         // 底部信息位置
+         var foot_place = function(){
+             // 显示器可用的工作高度
+             inner_height = window.innerHeight ;
+
+             // 网页正文所用高度
+             height = document.body.scrollHeight ;
+
+             if(height < inner_height - 50){
+                 $('.foot').css({
+                     "position":"fixed",
+                     "bottom":"0",
+                 })
+             }
+         };
+         // 网页加载完成时
+         $(window).load(function () {
+             foot_place();
+         });
+         // 窗口大小改变时
+         $(window).resize(function () {
+             foot_place();
+         });
+
          // 格式化字符串format函数
          String.prototype.format = function(args) {
             var result = this;
@@ -135,19 +159,6 @@
             }
             return result;
          };
-
-         // 显示器可用的工作高度
-         screen_height = window.screen.availHeight  ;
-
-         // 网页正文所用高度
-         height = document.body.scrollHeight ;
-
-         if(height < screen_height -50){
-             $('.foot').css({
-                 "position":"fixed",
-                 "bottom":"0",
-             })
-         }
 
          // 图片上传等待效果函数
          var upload_image = function(){
@@ -212,8 +223,8 @@
                 contentType: "application/json; charset=utf-8",
                 success:function (data) {
                     if (data["result"] == 'ok'){
-                        alert('上传成功！');
-                        window.location.href = "{% url 'home' %}";
+                        alert("上传成功！");
+                        window.location.href = "http://0.0.0.0:8000/blog/article?uuid={0}".format(data.uuid);
                     }else{
                         alert('上传失败！');
                     }

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>导航栏</title>
+    <title>{{ name }}</title>
     <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 
@@ -34,6 +34,7 @@
         }
         .article{
             font-size: 20px;
+            display: none;
         }
         .left-box{
             border: deepskyblue 1px solid;
@@ -77,23 +78,34 @@
     </div>
 
      <script>
-         $(document).ready(function () {
-             var text = $('.article').text();
-             $('.article').html(text);
+         // 底部信息位置
+         var foot_place = function(){
              // 显示器可用的工作高度
-             screen_height = window.screen.availHeight  ;
-             // alert(screen_height)
+             inner_height = window.innerHeight ;
 
              // 网页正文所用高度
              height = document.body.scrollHeight ;
-             alert(height);
 
-             if(height < screen_height - 50){
+             if(height < inner_height - 50){
                  $('.foot').css({
                      "position":"fixed",
                      "bottom":"0",
                  })
              }
+         };
+         // 网页加载完成时
+         $(window).load(function () {
+             foot_place();
+         });
+         // 窗口大小改变时
+         $(window).resize(function () {
+             foot_place();
+         });
+
+         $(document).ready(function () {
+             var text = $('.article').text();
+             $('.article').html(text);
+             $('.article').css("display", "inherit");
          });
 
     </script>

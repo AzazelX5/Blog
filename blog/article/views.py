@@ -1,6 +1,6 @@
 # coding:utf-8
 
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 import json
 import os
 import uuid
@@ -19,18 +19,28 @@ def index(request):
 
 
 def home(request):
-    artice = models.Article.objects.all()
-    return render_to_response('home.html', {'article_list': list(artice)})
+    if request.session.get('name'):
+        del request.session['name']
+    else:
+        request.session['name'] = 'Azazel'
+    artice = models.Article.objects.order_by("-create_time")
+    return render(request, 'home.html', {'article_list': list(artice)})
 
 
 def save_article(request):
     if request.method == 'POST':
         print(request.body)
         article_dict = json.loads(request.body)
-        models.Article.objects.create(name=article_dict['name'],
-                                      content=article_dict['content'])
+        author  = models.Author.objects.get(name='Azazel')
+        article = models.Article.objects.create(
+            name=article_dict['name'],
+            content=article_dict['content'],
+            category="Python",
+            author=author,
+        )
         data = {
             'result': 'ok',
+            'uuid': article.uuid,
         }
         return JsonResponse(data)
 
@@ -44,14 +54,30 @@ def get_article(request, uuid):
         return render_to_response('article.html', {'name': name, 'content': content})
 
 
+def _get_article(request):
+    print(11111)
+    if request.method == 'GET':
+        uuid = request.GET.get('uuid')
+        artice = models.Article.objects.get(uuid=uuid)
+        name = artice.name
+        content = artice.content
+        return render_to_response('article.html',
+                                  {'name': name, 'content': content})
+
+
 def edit_article(request):
     if request.method == 'GET':
         return render_to_response('edit_article.html')
 
 
-def test_html(request):
+def login_html(request):
     if request.method == 'GET':
-        return render_to_response('test.html')
+        return render_to_response('log_in.html')
+
+
+def registration_html(request):
+    if request.method == 'GET':
+        return render_to_response('registration.html')
 
 
 def save_image(request):
@@ -70,10 +96,72 @@ def save_image(request):
 
         data = {
             'result': 'ok',
-            'path': 'http://127.0.0.1:8000/{0}'.format(path)
+            'path': 'http://frptest.nodes.studio:8080//{0}'.format(path)
         }
 
         time.sleep(2)
 
         return JsonResponse(data)
 
+
+def log_in(request):
+    if request.method == 'POST':
+        user = request.POST['user']
+        password = request.POST['password']
+        print(request.POST)
+        print(request.POST['user'])
+        author = models.Author.objects.filter(
+            name=user,
+            password=password,
+        ).first()
+
+        # if password == author.password:
+        #     status = True
+        #     reason = "登录成功"
+        # else:
+        #     status = False
+        #     reason = "密码不正确"
+
+        if author:
+            request.session['name'] = author.name
+            status = True
+            reason = "登录成功"
+        else:
+            status = False
+            reason = "密码不正确"
+
+        result = {
+            "status": status,
+            "reason": reason,
+
+        }
+        return render_to_response('prompt.html', {'result': result})
+
+
+def registration(request):
+    if request.method == 'POST':
+        email_str = '{0}@{1}'
+
+        name = request.POST['user']
+        password = request.POST['password']
+        email = request.POST['email']
+
+        if not request.POST['email_suffix'].strip():
+            email_suffix = request.POST['email_default_suffix']
+        else:
+            email_suffix = request.POST['email_suffix']
+
+        email = email_str.format(email, email_suffix)
+
+        author = models.Author.objects.create(
+            name=name,
+            password=password,
+            email=email
+        )
+        print(author)
+        result = {
+            "status": True,
+            "reason": "注册成功",
+
+        }
+        return render_to_response('prompt.html', {'result': result})

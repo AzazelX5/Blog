@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}主页{% endblock %}
+
+{% block content %}
+    <h3>
+        {{ result.reason }}，3秒钟后跳转到主页。。。
+    </h3>
+
+    <script>
+    $(window).load(function () {
+        setTimeout(function () {
+            window.location.href = "{% url 'home' %}"
+        }, 3000);
+    });
+</script>
+{% endblock %}
+

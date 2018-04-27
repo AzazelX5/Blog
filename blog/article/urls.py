@@ -21,7 +21,11 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('save/', views.save_article, name='save'),
     path('get/<uuid:uuid>/', views.get_article, name='get'),
+    path('article/', views._get_article, name='article'),
     path('edit/', views.edit_article, name='edit'),
-    path('test/', views.test_html, name='test'),
+    path('login/', views.login_html, name='login'),
     path('save_image/', views.save_image, name='save_image'),
+    path('log_in/', views.log_in, name='log_in'),
+    path('registration/', views.registration, name='registration'),
+    path('registration_page/', views.registration_html, name='registration_page')
 ]
