@@ -79,10 +79,10 @@ def upload_image_view(request):
 
         data = {
             'result': 'ok',
-            'path': 'http://test.ngroktest.nodes.studio/{0}'.format(path)
+            'path': 'http://0.0.0.0:8000/{0}'.format(path)
         }
 
-        # time.sleep(2)
+        time.sleep(1)
 
         return JsonResponse(data)
 
@@ -180,7 +180,7 @@ def log_out_view(request):
         result = {
             "status": True,
             "reason": "注销成功，3S后跳转到主页。。。",
-            "url": "http://test.ngroktest.nodes.studio/blog/home/",
+            "url": "/blog/home/",
         }
         return render(request, 'prompt.html', {'result': result})
 

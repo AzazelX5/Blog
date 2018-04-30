@@ -8,6 +8,8 @@
             margin-bottom: 10px;
             position: relative;
             clear: both;
+            /*left: -15px;*/
+            /*right: 15px;*/
         }
 
         /* 文章标题前标签样式 */
@@ -43,12 +45,13 @@
         }
         .excerpt .note {
             color: #777;
-            line-height: 24px;
+            line-height: 26px;
+            font-size: 15px;
             margin-bottom: 0;
             font-style: normal;
             display: -webkit-box;
             -webkit-box-orient: vertical;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 3;
             overflow: hidden;
         }
 
@@ -59,6 +62,9 @@
             float: right;
             margin-right: 20px;
         }
+        .label-info{
+            font-size: 18px;
+        }
     </style>
     {% for article in article_list %}
         <article class="excerpt">
@@ -67,7 +73,7 @@
             <header>
                 <!-- 文章标签 -->
                 <a href="#">
-                    <span id="label-name" class="label label-info" style="font-size: 18px">python</span>
+                    <span class="label label-info">python</span>
                 </a>
                 <h2>
                     <a href="{% url 'article' article.uuid %}">
@@ -101,12 +107,16 @@
                     </a>
                 </span>
                 <span class="muted">
-                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                    <span>浏览量(0)</span>
+                    <a>
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                        <span>浏览量(0)</span>
+                    </a>
                 </span>
                 <span class="muted">
-                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-                    <span>时间</span>
+                    <a>
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        <span>时间</span>
+                    </a>
                 </span>
                 <span class="muted">
                     <a href="#">
@@ -138,7 +148,7 @@
             $('.note').each(function () {
                 var text = $(this).text();
                 text = removeHTMLTag(text);
-                if($(this).height() / 24 <= 4){
+                if($(this).height() / 26 <= 3){
                     if($(this).length < 50){
                         text += "...";
                     }else{

@@ -66,14 +66,28 @@
          }
      };
 
+     // 适配页面大小
      var change_nav = function(){
          var _width = $(window).width();
-         if(_width < 950){
+         $('.adv').text(_width);
+         if(_width <= 950){
+             // 顶部导航栏
              $('.nav-box').css({
                 "left": 0,
                 "right": 0,
              });
              $('.top-box p').hide();
+
+             // 主页
+             $('.middle').css({
+                 "margin": "0",
+             });
+             $('.right-box').hide();
+             $('.left-box').css({
+                 "padding": "0",
+             })
+
+
          }
          if(_width > 950){
              $('.nav-box').css({
@@ -81,8 +95,40 @@
                 "right": 80,
              });
              $('.top-box p').show();
+
+             // 主页
+             $('.middle').css({
+                 "margin": "0 65px",
+             });
+             $('.right-box').show();
+             $('.left-box').css({
+                 "padding": "",
+             })
          }
-         if(_width < 500){
+
+         if(_width <= 675){
+            $('.muted a').hide();
+            $('.excerpt').css("padding", "20px 15px 5px 20px");
+            $('.focus a img').attr({
+                "width": "100",
+                "height": "60",
+            });
+            $('.excerpt h2 span').css("font-size", "15px");
+            $('.label-info').css("font-size", "15px");
+         }
+         if(_width > 675){
+            $('.muted a').show();
+            $('.excerpt').css("padding", "20px 15px 20px 20px");
+            $('.focus a img').attr({
+                "width": "200",
+                "height": "120",
+            });
+            $('.excerpt h2 span').css("font-size", "25px");
+            $('.label-info').css("font-size", "18px");
+
+         }
+
+         if(_width <= 500){
              $('.first-word').css("left", "40%");
              $('.second-word').css("left", "45%");
          }
@@ -90,7 +136,7 @@
              $('.first-word').css("left", "44%");
              $('.second-word').css("left", "55%");
          }
-         if(_width < 400){
+         if(_width <= 400){
              $('.first-word').css("left", "40%");
              $('.second-word').css("left", "40%");
          }
