@@ -55,17 +55,26 @@
             color: deeppink;
         }
         .btn-code{
-            width: 115px;
+            width: 140px;
             float: right;
             margin-top: -34px;
+            margin-right: -14px;
         }
         .btn-code button{
             width: 100%;
         }
+        #inputCode{
+            width: 170px;
+        }
+        #image-code{
+            display: none;
+            width: 100%;
+            height: 34px;
+        }
     </style>
 
     <div class="login_box center-block">
-        <form class="form-horizontal" action="{% url 'log_in' %}" method="post">
+        <form class="form-horizontal">
             <!-- 昵称 -->
             <div class="form-group user">
                 <div class="col-sm-12 input-group">
@@ -100,10 +109,11 @@
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
                     </span>
-                    <input name="code" type="text" class="form-control" id="inputCode" aria-describedby="inputCodeStatus" placeholder="填写验证码"/>
+                    <input name="code" type="text" class="form-control" id="inputCode" aria-describedby="inputCodeStatus" disabled="disabled" placeholder="填写验证码"/>
                 </div>
-                <div class="btn-code">
-                        <button type="button" class="btn btn-info">点击获取</button>
+                <div class="col-sm-5 btn-code">
+                        <button type="button" class="btn btn-info btn-obtain-code">点击获取</button>
+                        <div id="image-code"></div>
                 </div>
                 <div class="tips">
                     <span id="inputCodeStatus" class="help-block"></span>
@@ -111,11 +121,11 @@
             </div>
 
             <div class="form-group">
-                <!-- 同意条款选择框 -->
+                <!-- 记住密码 -->
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" id="checkboxSuccess" value="option1">
-                        同意条款
+                        <input type="checkbox" id="checkboxSuccess" value="option1" id="checkboxSuccess">
+                        记住密码
                     </label>
 
                     <div class="find-pass">
@@ -124,7 +134,7 @@
                 </div>
 
                 <!-- 注册按钮 -->
-                <input type="submit" class="btn btn-info btn-login" disabled="disabled" value="登录">
+                <button type="button" class="btn btn-info btn-login" disabled="disabled">登录</button>
 
                 <!-- 已有账号，直接登录框 -->
                 <div class="go-registration">
@@ -135,77 +145,48 @@
     </div>
 
     {% load static %}
-     <!-- jQuery -->
-     <!--<script type="text/javascript" src="{% static 'js/jquery.min.js'%}"></script>-->
+    <script type="text/javascript" src="{% static 'js/gVerify.js'%}"></script>
 
     <script>
         $(function () {
-            $('#inputUser').click();
-            var user_status = false;
-            var password_status = false;
-            var password;
             //监控账号框的变化
-            $('#inputUser').live("click input propertychange change", function () {
-                if($('#inputUser').val().length >= 6){
-                    $('.user').addClass("has-success");
-                    $('.user').removeClass("has-error");
-                    $('#inputUserStatus').text("账号格式正确")
-
-                    user_status = true;
-                    if(password_status){
-                        $('.btn-login').removeAttr("disabled");
-                    }
-
-                }else if($('#inputUser').val().length == 0){
+            $('#inputUser').on("click input change", function () {
+                if($('#inputUser').val().length == 0){
                     $('.user').addClass("has-error");
                     $('.user').removeClass("has-success");
-                    $('#inputUserStatus').text("账号不能为空")
+                    $('#inputUserStatus').text("账号不能为空");
 
-                    user_status = false;
-                    $('.btn-login').attr("disabled","disabled");
+                    inspect_submit();
 
                 }else{
-                    $('.user').addClass("has-error");
-                    $('.user').removeClass("has-success");
-                    $('#inputUserStatus').text("账号长度必须大于6")
+                    $('.user').addClass("has-success");
+                    $('.user').removeClass("has-error");
+                    $('#inputUserStatus').text("");
 
-                    user_status = false;
-                    $('.btn-login').attr("disabled","disabled");
+                    inspect_submit();
                 }
             });
             // 监听密码框的变化
-            $('#inputPassword, #inputPasswordShow').live("click input change propertychange", function () {
-                // debugger
+            var password;
+            $('#inputPassword, #inputPasswordShow').on("click input change", function () {
                 if($(this).css("display") != "none"){
-                    if($(this).val().length >= 8){
-                        $('.password').addClass("has-success");
-                        $('.password').removeClass("has-error");
-                        $('#inputPasswordStatus').text("密码格式正确")
-
-                        $('.view').removeClass("sr-only");
-
-                        password_status = true;
-                        if(user_status){
-                            $('.btn-login').removeAttr("disabled");
-                        }
-                    }else if($(this).val().length == 0){
+                    if($(this).val().length == 0){
                         $('.password').addClass("has-error");
                         $('.password').removeClass("has-success");
-                        $('#inputPasswordStatus').text("密码不能为空")
+                        $('#inputPasswordStatus').text("密码不能为空");
+
+                        inspect_submit();
 
                         $('.view').addClass("sr-only");
 
-                        password_status = false;
-                        $('.btn-login').attr("disabled","disabled");
                     }else{
-                        $('.password').addClass("has-error");
-                        $('.password').removeClass("has-success");
-                        $('#inputPasswordStatus').text("密码长度必须大于8")
+                        $('.password').addClass("has-success");
+                        $('.password').removeClass("has-error");
+                        $('#inputPasswordStatus').text("");
+
+                        inspect_submit();
 
                         $('.view').removeClass("sr-only");
-
-                        password_status = false;
-                        $('.btn-login').attr("disabled","disabled");
                     }
                     password = $(this).val();
                 }
@@ -215,8 +196,6 @@
                 if($('.view span').attr("class") == "glyphicon glyphicon-eye-close"){
                     $('.view span').removeClass("glyphicon-eye-close");
                     $('.view span').addClass("glyphicon-eye-open");
-
-                    // var password = $('#inputPassword').val();
 
                     $('#inputPassword').hide();
                     $('#inputPasswordShow').show();
@@ -228,13 +207,126 @@
                     $('.view span').removeClass("glyphicon-eye-open");
                     $('.view span').addClass("glyphicon-eye-close");
 
-                    // var password = $('#inputPasswordShow').val();
                     $('#inputPasswordShow').hide();
                     $('#inputPassword').show();
 
                     $('#inputPasswordShow').val(password);
                     $('#inputPassword').val(password);
                 }
+            });
+
+            // 点击获取验证码
+            var verifyCode;
+            var send_code = function(code){
+                $.ajax({
+                    url: "{% url 'save_code' %}",
+                    type: "GET",
+                    data: {"code": code},
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                    },
+                    error: function () {
+                        alert('服务器出错！');
+                    }
+                })
+            };
+
+            $('.btn-obtain-code').click(function () {
+                $(this).hide();
+                $('#image-code').show();
+                verifyCode = new GVerify("image-code");
+
+                send_code(verifyCode.options.code);
+                $('#inputCodeStatus').text("验证码不区分大小写！")
+                $('#inputCode').attr("disabled", false);
+            });
+            // 验证码图片点击
+            $('#image-code').click(function () {
+                $('#inputCode').val("");
+                $('.code').removeClass("has-success");
+                $('.code').removeClass("has-error");
+
+                send_code(verifyCode.options.code);
+                $('#inputCodeStatus').text("验证码不区分大小写！");
+                inspect_submit();
+            });
+            // 监听验证码框变化
+            $('#inputCode').on('click change input', function () {
+                var code = $(this).val();
+                if(code.length == 0){
+                    $('.code').addClass('has-error');
+                    $('.code').removeClass('has-success');
+
+                    $('#inputCodeStatus').text("验证码不能为空！");
+
+                    inspect_submit();
+                }else{
+                    if(code.toLowerCase() == verifyCode.options.code.toLowerCase()){
+                        $('.code').addClass('has-success');
+                        $('.code').removeClass('has-error');
+
+                        $('#inputCodeStatus').text("验证码输入正确！");
+
+                        inspect_submit();
+                    }else{
+                        $('.code').addClass('has-error');
+                        $('.code').removeClass('has-success');
+
+                        $('#inputCodeStatus').text("验证码输入有误！")
+
+                        inspect_submit();
+                    }
+                }
+
+            });
+
+            var inspect_submit = function () {
+                var has_son_str = function (obj) {
+                    return obj.hasClass("has-success");
+                };
+                if(
+                    has_son_str($('.user')) &&
+                    has_son_str($('.password')) &&
+                    has_son_str($('.code'))
+                ){
+                    $('.btn-login').attr('disabled', false)
+                }else{
+                    $('.btn-login').attr('disabled', true)
+                }
+            };
+
+            $('.btn-login').click(function () {
+                var data = {
+                    name: $('#inputUser').val(),
+                    password: password,
+                    code: verifyCode.options.code,
+                    keep_pass: $('#checkboxSuccess').is(":checked"),
+                };
+
+                $.ajax({
+                    url: "{% url 'log_in' %}",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if(data.status){
+                            window.location.href = "/blog/home/";
+                        }else{
+                            $('.user, .password').addClass("has-error");
+                            $('.user, .password').removeClass("has-success");
+                            inspect_submit();
+
+                            $('#inputUserStatus').text(data.reason);
+                            $('#inputPasswordStatus').text(data.reason);
+                        }
+                    },
+                    error: function () {
+                        alert('服务器出错！');
+                    }
+                })
             });
         });
     </script>

@@ -125,3 +125,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
+
+# 邮件配置
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.163.com'                      # SMTP地址
+EMAIL_PORT = 25                                  # SMTP端口
+EMAIL_HOST_USER = 'azazel_zhao@163.com'          # 我自己的邮箱
+EMAIL_HOST_PASSWORD = 'azazel163zhao'            # 我的邮箱密码
+EMAIL_SUBJECT_PREFIX = '[Azazel`s Blog]'         # 为邮件Subject-line前缀,默认是'[django]'
+EMAIL_USE_TLS = True                             # 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
+DEFAULT_FROM_EMAIL= EMAIL_HOST_USER

@@ -70,7 +70,7 @@
 
      {% load static %}
      <!-- jQuery -->
-     <script type="text/javascript" src="{% static 'js/jquery.min.js'%}"></script>
+     <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
      <!-- 文件拖拽上传插件 -->
      <script type="text/javascript" src="{% static 'js/dropzone.js'%}"></script>
      <!-- Markdown插件 -->
@@ -169,7 +169,7 @@
                 success:function (data) {
                     if (data["result"] == 'ok'){
                         alert("上传成功！");
-                        window.location.href = "http://0.0.0.0:8000/blog/article/{0}/".format(data.uuid);
+                        window.location.href = "/blog/article/{0}/".format(data.uuid);
                     }else{
                         alert('上传失败！');
                     }

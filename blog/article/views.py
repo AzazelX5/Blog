@@ -1,12 +1,15 @@
 # coding:utf-8
-
-from django.shortcuts import render
 import json
 import os
 import uuid
 import time
 
+from random import Random
+
+from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMultiAlternatives
 
 from blog.settings import BASE_DIR
 
@@ -76,10 +79,10 @@ def upload_image_view(request):
 
         data = {
             'result': 'ok',
-            'path': 'http://0.0.0.0:8000/{0}'.format(path)
+            'path': 'http://test.ngroktest.nodes.studio/{0}'.format(path)
         }
 
-        time.sleep(2)
+        # time.sleep(2)
 
         return JsonResponse(data)
 
@@ -107,6 +110,25 @@ def save_article_view(request):
         return JsonResponse(data)
 
 
+def save_login_code_view(request):
+    """
+    将登陆时前端生成的验证码保存在session中，用来判断后面登录时是否是通过正常途径登录的。
+    :param request:
+    :return:
+    """
+    if request.method == 'GET':
+        code = request.GET.get('code')
+        print(code)
+        request.session['login_code'] = code
+
+        result = {
+            "status": True,
+            "reason": "保存成功！",
+        }
+
+        return JsonResponse(result)
+
+
 def log_in_view(request):
     """
     登录功能视图
@@ -114,28 +136,36 @@ def log_in_view(request):
     :return:
     """
     if request.method == 'POST':
-        user = request.POST['user']
-        password = request.POST['password']
-        print(request.POST)
-        print(request.POST['user'])
-        author = models.Author.objects.filter(
-            name=user,
-            password=password,
-        ).first()
+        author_dict = json.loads(request.body)
+        # 判断验证码，防止非正常途径登录。
+        if request.session['login_code'] == author_dict['code']:
+            author = models.Author.objects.filter(
+                name__exact=author_dict['name'],
+                password__exact=author_dict['password'],
+            ).first()
 
-        if author:
-            request.session['name'] = author.name
-            status = True
-            reason = "登录成功"
+            if author:
+                request.session['name'] = author.name
+                # 判断是否勾选记住密码，是则保存session一个月，否则关闭浏览器立即失效
+                if author_dict['keep_pass']:
+                    request.session.set_expiry(2592000)
+                else:
+                    request.session.set_expiry(0)
+
+                status = True
+                reason = "登录成功！"
+            else:
+                status = False
+                reason = "账号或密码输入有误！"
         else:
             status = False
-            reason = "账号或密码输入有误"
+            reason = "验证码不正确，不是正常的访问，拒绝登录。。。"
 
         result = {
             "status": status,
             "reason": reason,
         }
-        return render(request, 'prompt.html', {'result': result})
+        return JsonResponse(result)
 
 
 def log_out_view(request):
@@ -149,7 +179,8 @@ def log_out_view(request):
 
         result = {
             "status": True,
-            "reason": "注销成功",
+            "reason": "注销成功，3S后跳转到主页。。。",
+            "url": "http://test.ngroktest.nodes.studio/blog/home/",
         }
         return render(request, 'prompt.html', {'result': result})
 
@@ -162,7 +193,7 @@ def sign_up_view(request):
     """
     if request.method == 'POST':
         email_str = '{0}@{1}'
-
+        print(request.POST)
         name = request.POST['user']
         password = request.POST['password']
         email = request.POST['email']
@@ -179,10 +210,114 @@ def sign_up_view(request):
             password=password,
             email=email
         )
-        request.session['name'] = author.name
+        del request.session['sign_up_code']
+
         result = {
             "status": True,
-            "reason": "注册成功",
-
+            "reason": "注册成功，3S后跳转到登录页面。。。",
+            "url": 'http://test.ngroktest.nodes.studio/blog/login/',
         }
         return render(request, 'prompt.html', {'result': result})
+
+
+def inspect_author_view(request):
+    """
+    注册 时 验证账号、邮箱、以及验证码等视图
+    :param request:
+    :return:
+    """
+    if request.method == 'GET':
+        if request.GET.get('type') == 'name':
+            name = request.GET.get('value')
+            try:
+                models.Author.objects.get(name__exact=name)
+                status = False
+                reason = '该账号已被注册！'
+            except ObjectDoesNotExist:
+                status = True
+                reason = '该账号可以使用！'
+        elif request.GET.get('type') == 'email':
+            email = request.GET.get('value')
+            try:
+                models.Author.objects.get(email__exact=email)
+                status = False
+                reason = '该邮箱已经注册！'
+            except ObjectDoesNotExist:
+                status = True
+                reason = '该邮箱可以使用！'
+        else:
+            code = request.GET.get('value')
+            try:
+                r_str = request.session['sign_up_code']
+                print(r_str)
+                if code == r_str:
+                    status = True
+                    reason = '验证码输入正确！'
+                else:
+                    status = False
+                    reason = '验证码输入有误！'
+            except KeyError:
+                status = False
+                reason = '验证码过期！'
+        result = {
+            "status": status,
+            "reason": reason,
+        }
+        return JsonResponse(result)
+
+
+def send_email_code_view(request):
+    """
+    注册时给指定邮箱发送验证码视图
+    :param request:
+    :return:
+    """
+    if request.method == "POST":
+        email_address = json.loads(request.body)['email']
+
+        # 6位验证码
+        r_str = random_str(6)
+        # 将验证码存入session
+        request.session['sign_up_code'] = r_str
+        # 设置过期时间为5分钟
+        request.session.set_expiry(30)
+
+        # print("\n开始发送电子邮件， 目标邮箱：{0} , 验证码：{1}".format(email_address, r_str))
+        # time_start = time.time()
+        #
+        # subject, from_email, to_email = \
+        #     '[Azazel`s Blog] 注册验证码', 'azazel_zhao@163.com', 'azazel.zhao@live.cn'
+        #
+        # text_content = '首先，感谢你在我的博客注册！\n下面是验证码：{0} \n此验证吗在5分钟内有效，请抓紧时间注册！\n欢迎你的加入！'.format(r_str)
+        #
+        # html_content = '<h2>首先，感谢你在我的博客注册！</h2></ br>' \
+        #                '<p>下面是验证码：</p> <strong>{0}</strong> </ br>' \
+        #                '<h3>此验证吗在5分钟内有效，请抓紧时间注册！</h3></ br>' \
+        #                '<h3>欢迎你的加入！</h3>'.format(r_str)
+        #
+        # msg = EmailMultiAlternatives(subject, text_content,
+        #                              from_email, [to_email])
+        # msg.attach_alternative(html_content, "text/html")
+        # msg.send()
+        #
+        # time_end = time.time()
+        # print("邮件发送成功，用时：{0} s\n".format(time_end-time_start))
+        data = {
+            'result': "测试版本，验证码为：{0}, 30S内有效".format(r_str),
+        }
+        return JsonResponse(data)
+
+
+def random_str(random_length=8):
+    """
+    生成指定位数的随机数
+    :param random_length: 需要生成随机数的长度
+    :return:
+    """
+    r_str = ''
+    chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+    random = Random()
+    for i in range(random_length):
+        r_str += chars[random.randint(0, len(chars) - 1)]
+
+    return r_str

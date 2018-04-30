@@ -4,13 +4,14 @@
 
 {% block content %}
     <h3>
-        {{ result.reason }}，3秒钟后跳转到主页。。。
+        {{ result.reason }}
     </h3>
 
     <script>
     $(window).load(function () {
+        var url = "{{ result.url }}";
         setTimeout(function () {
-            window.location.href = "{% url 'home' %}"
+            window.location.href = url;
         }, 3000);
     });
 </script>
