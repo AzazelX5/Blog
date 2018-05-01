@@ -3,15 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>广告</title>
+    {% load static %}
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.simplyscroll.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'css/jquery.simplyscroll.css' %}" media="all" type="text/css">
+
     <style>
         *{
             margin: 0;
             padding: 0;
         }
+        li {
+            list-style:none;
+        }
+        a {
+            text-decoration:none;
+        }
+        img {
+            border:none;
+        }
+        .winBox {
+            width:auto;
+            height:40px;
+            overflow:hidden;
+            position:relative;
+            background: darkgrey;
+        }
+        .scroll {
+            /*width的大小是根据下面li的长度和多少个li而定的，需注意！*/
+            width:1500px;
+            position:absolute;
+            left:0;
+            top:0;
+        }
+        .scroll li {
+            width:300px;
+            float:left;
+            line-height:40px;
+            text-align:center;
+        }
     </style>
 </head>
 <body>
-    <span>广告位 --> 测试session的值：{{ request.session.name }} --------- 当前网页宽度为：</span>
-    <span class="adv"></span>
+    <div class="winBox">
+        <ul class="scroll">
+            <li><a href="#">广告位：这是第1个广告</a></li>
+            <li><a href="#">广告位：这是第2个广告</a></li>
+            <li><a href="#">广告位：这是第3个广告</a></li>
+            <li><a href="#">广告位：这是第4个广告</a></li>
+            <li><a href="#">广告位：这是第5个广告</a></li>
+            <!--给所要的内容复制一份-->
+            <li><a href="#">广告位：这是第1个广告</a></li>
+            <li><a href="#">广告位：这是第2个广告</a></li>
+            <li><a href="#">广告位：这是第3个广告</a></li>
+            <li><a href="#">广告位：这是第4个广告</a></li>
+            <li><a href="#">广告位：这是第5个广告</a></li>
+        </ul>
+    </div>
+
+
+    <script>
+        var num = 0;
+        var timer;
+        var adv_scroll = function(){
+            clearInterval(timer);
+            $('.winBox').css("width", $('.nav-box').width());
+            $('.scroll').css("width", $('.scroll > li').length * 300);
+
+            function goLeft() {
+                //750是根据你给的尺寸，可变的
+                if (num == -1500) {
+                    num = 0;
+                }
+                num -= 1;
+                $(".scroll").css({
+                    left: num
+                })
+            }
+            //设置滚动速度
+            timer = setInterval(goLeft, 20);
+            //设置鼠标经过时滚动停止
+            $(".winBox").hover(
+                function() {
+                    clearInterval(timer);
+                },
+                function() {
+                    clearInterval(timer);
+                    timer = setInterval(goLeft, 20);
+                }
+            );
+        };
+    </script>
+
 </body>
 </html>

@@ -7,16 +7,59 @@
     <title>{% block title %}{% endblock %}</title>
     <!-- Bootstrap -->
     <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    {% load static %}
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- 图片旋转插件 -->
+    <script type="text/javascript" src="{% static 'js/jquery.rotate.min.js'%}"></script>
     <style>
         *{
             margin: 0;
             padding: 0;
         }
-        .top{
-            height: 155px;
+        body{
+            font-size: 14px;
+            line-height: 20px;
+            background-color: #eee;
+        }
+        .top-box{
+            width: 100%;
+            height: 100px;
+        }
+        .top-box img{
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        ._word-style{
+            font-size: 30px;
+            color: white;
+        }
+        .first-word{
+            padding-left: 42%;
+
+        }
+        .second-word{
+            padding-left: 50%;
+
+        }
+        .blog-auth{
+            float: right;
+            margin-right: 10%;
+            font-size: 20px;
+        }
+        .nav-box {
+            padding: 0 65px;
         }
         .middle{
-            margin: 0 65px;
+            margin: 0 50px;
+        }
+        .ad-box{
+            padding-left: 15px;
+            margin-top: -20px;
         }
         .foot{
             width: 100%;
@@ -24,15 +67,85 @@
             border: blueviolet 1px solid;
         }
     </style>
+
 </head>
 <body>
-    <!-- 导航栏 -->
-    <div class="top">
-        {% include 'nav.html' %}
+    <!-- 顶部图片 -->
+    <div class="top-box">
+        {% load static %}
+        <img src="{% static 'images/home_top_box.jpeg'%}" height="100" width="100%">
+        <div style="width: 100%; height: 18px;"></div>
+        <span class="first-word _word-style">给梦想一个机会</span><br />
+        <div style="width: 100%; height: 18px;"></div>
+        <span class="second-word _word-style">给未来一种可能</span>
+        <span class="blog-auth">Azazel的个人博客</span>
     </div>
+    <div class="nav-box">
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="{% url 'home' %}">主页 </a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">技术杂谈 <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="#">Python</a></li>
+                    <li><a href="#">Java</a></li>
+                    <li><a href="#">Django</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Git</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Ngrok</a></li>
+                  </ul>
+                </li>
+                <li class=""><a href="#">学习笔记 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="#">其他</a></li>
+              </ul>
+              <form class="navbar-form navbar-left">
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+              </form>
+              <ul class="nav navbar-nav navbar-right">
+                <li class="web-info"><a href="#">关于本站 </a></li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                      <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                      <span>未登录 </span>
+                      <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{% url 'adaptive' 'login' %}">登录</a></li>
+                    <li><a href="{% url 'adaptive' 'registration' %}">注册</a></li>
+                    <li><a href="{% url 'adaptive' 'edit_article' %}">发表文章</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'log_out' %}">注销</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div><!-- /.navbar-collapse -->
+
+          </div><!-- /.container-fluid -->
+        </nav>
+    </div>
+
 
     <!-- 内容 -->
     <div class="middle">
+        <div class="ad-box">
+            {% include 'advertisement.html' %}
+        </div>
         {% block content %}{% endblock %}
     </div>
 
@@ -41,69 +154,60 @@
         {% include 'foot.html' %}
     </div>
 
-    {% load static %}
-    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
-    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
-    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <!-- 图片旋转插件 -->
-    <script type="text/javascript" src="{% static 'js/jquery.rotate.min.js'%}"></script>
 
     <script>
      // 底部信息位置
      var foot_place = function(){
          // 显示器可用的工作高度
-         inner_height = window.innerHeight ;
+         var inner_height = $(window).height();
 
          // 网页正文所用高度
-         height = document.body.scrollHeight ;
+         var height = document.body.scrollHeight ;
 
-         if(height < inner_height - 50){
+         if(height <= inner_height){
              $('.foot').css({
                  "position":"fixed",
                  "bottom":"0",
              })
+         }else{
+             $('.foot').css({
+                 "position":"",
+                 "bottom":"",
+             });
          }
+
      };
 
      // 适配页面大小
      var change_nav = function(){
          var _width = $(window).width();
          $('.adv').text(_width);
-         if(_width <= 950){
-             // 顶部导航栏
-             $('.nav-box').css({
-                "left": 0,
-                "right": 0,
-             });
-             $('.top-box p').hide();
-
-             // 主页
-             $('.middle').css({
-                 "margin": "0",
-             });
+         if(_width <= 995){
+             $('.nav-box').css("padding", "0");
+             $('.middle').css("margin", "0");
+             $('.left-box').css("padding", "0");
+             $('.ad-box').css("padding-left", "0");
              $('.right-box').hide();
-             $('.left-box').css({
-                 "padding": "0",
-             })
-
-
-         }
-         if(_width > 950){
-             $('.nav-box').css({
-                "left": 80,
-                "right": 80,
-             });
-             $('.top-box p').show();
-
-             // 主页
-             $('.middle').css({
-                 "margin": "0 65px",
-             });
+             $('.first-word').hide();
+             $('.second-word').hide();
+         }else{
+             $('.nav-box').css("padding", "0 65px");
+             $('.middle').css("margin", "0 50px");
+             $('.left-box').css("padding", "");
+             $('.ad-box').css("padding-left", "15px");
              $('.right-box').show();
-             $('.left-box').css({
-                 "padding": "",
-             })
+             $('.first-word').show();
+             $('.second-word').show();
+         }
+
+         if(_width <= 800){
+             $('.web-info').hide();
+         }else{
+             $('.web-info').show();
+         }
+
+         if(_width <=760){
+             $('.web-info').show();
          }
 
          if(_width <= 675){
@@ -115,8 +219,9 @@
             });
             $('.excerpt h2 span').css("font-size", "15px");
             $('.label-info').css("font-size", "15px");
-         }
-         if(_width > 675){
+
+            $('.excerpt h2').css("top", "1px");
+         }else{
             $('.muted a').show();
             $('.excerpt').css("padding", "20px 15px 20px 20px");
             $('.focus a img').attr({
@@ -126,24 +231,10 @@
             $('.excerpt h2 span').css("font-size", "25px");
             $('.label-info').css("font-size", "18px");
 
+            $('.excerpt h2').css("top", "3px");
          }
 
-         if(_width <= 500){
-             $('.first-word').css("left", "40%");
-             $('.second-word').css("left", "45%");
-         }
-         if(_width > 500){
-             $('.first-word').css("left", "44%");
-             $('.second-word').css("left", "55%");
-         }
-         if(_width <= 400){
-             $('.first-word').css("left", "40%");
-             $('.second-word').css("left", "40%");
-         }
-         if(_width > 400){
-             $('.first-word').css("left", "40%");
-             $('.second-word').css("left", "45%");
-         }
+
      };
 
 
@@ -151,6 +242,7 @@
      $(window).load(function () {
          foot_place();
          change_nav();
+         adv_scroll();
          // 判断登录状态
          var login_status_name = "{{ request.session.name }}";
          if(login_status_name == ""){
@@ -163,6 +255,9 @@
      $(window).resize(function () {
          foot_place();
          change_nav();
+
+         // $('.ad-box').hide();
+         adv_scroll();
      });
     </script>
 </body>

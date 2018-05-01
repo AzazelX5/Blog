@@ -79,7 +79,7 @@ def upload_image_view(request):
 
         data = {
             'result': 'ok',
-            'path': 'http://0.0.0.0:8000/{0}'.format(path)
+            'path': 'http://10.0.0.105:8000/{0}'.format(path)
         }
 
         time.sleep(1)
