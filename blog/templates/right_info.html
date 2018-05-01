@@ -3,16 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style:none;
+        }
+        a {
+            text-decoration:none;
+        }
+        .auth-info{
+            width: 100%;
+            height: 70px;
+            background-color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .weixin, .tim, .email, .github{
+            float: left;
+        }
+        ._auth-info-mr{
+            margin-right: 25px;
+        }
+        .coding{
+           float: right;
+        }
+        .hot-topics{
+            width: 100%;
+            height: 320px;
+            margin-top: 10px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+        .hot-topics span{
+            font-size: 18px;
+        }
+        hr{
+            background-color: cyan;
+            height: 1px;
+            border: none;
+            margin-top: 5px;
+        }
+        .auth-info img{
+            max-width: 50px;
+            max-height: 50px;
+        }
+    </style>
 </head>
 <body>
-    <p>测试数据</p>
-    <p>测试数据</p>
-    <p>测试数据</p>
-    <p>测试数据</p>
-    <p>测试数据</p>
-    <p>测试数据</p>
-    <p>测试数据</p>
-    <p>测试数据</p>
-    <p>测试数据</p>
+    {% load static %}
+    <div class="auth-info">
+        <ul>
+            <li class="weixin _auth-info-mr">
+                <a href="#"><img src="{% static 'images/weixin.png'%}"></a>
+            </li>
+            <li class="tim _auth-info-mr">
+                <a href="#"><img src="{% static 'images/tim.png'%}" height="50" width="50"></a>
+            </li>
+            <li class="email _auth-info-mr">
+                <a href="#"><img src="{% static 'images/email.png'%}" height="50" width="50"></a>
+            </li>
+            <li class="github _auth-info-mr">
+                <a href="#"><img src="{% static 'images/github.png'%}" height="50" width="50"></a>
+            </li>
+            <li class="coding">
+                <a href="#"><img src="{% static 'images/coding.png'%}" height="50" width="50"></a>
+            </li>
+        </ul>
+    </div>
+    <div class="hot-topics">
+        <span>热门专题</span> <hr>
+        {% include 'image_carousel.html' %}
+    </div>
+
+    <script>
+        $('.hot-topics span').click(function () {
+           alert($('.img-carousel').width());
+        });
+    </script>
 </body>
 </html>

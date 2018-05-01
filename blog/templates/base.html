@@ -59,7 +59,7 @@
         }
         .ad-box{
             padding-left: 15px;
-            margin-top: -20px;
+            margin-top: -60px;
         }
         .foot{
             width: 100%;
@@ -181,20 +181,41 @@
      // 适配页面大小
      var change_nav = function(){
          var _width = $(window).width();
-         $('.adv').text(_width);
-         if(_width <= 995){
+
+         if(_width <= 1200){
              $('.nav-box').css("padding", "0");
              $('.middle').css("margin", "0");
-             $('.left-box').css("padding", "0");
+             $('.left-box').css({
+                 "padding": "0",
+                 "width": _width-400-10,
+             });
              $('.ad-box').css("padding-left", "0");
-             $('.right-box').hide();
-             $('.first-word').hide();
-             $('.second-word').hide();
+             $('.right-box').css({
+                 "margin-left": "",
+                 "float": "right",
+                 "padding": "5px 0",
+             });
          }else{
              $('.nav-box').css("padding", "0 65px");
              $('.middle').css("margin", "0 50px");
-             $('.left-box').css("padding", "");
+             $('.left-box').css({
+                 "padding": "",
+                 "width": _width-400-100,
+             });
              $('.ad-box').css("padding-left", "15px");
+             $('.right-box').css({
+                 "margin-left": "-10px",
+                 "float": "",
+                 "padding": "5px",
+             });
+         }
+         if(_width <= 995){
+             $('.right-box').hide();
+             $('.first-word').hide();
+             $('.second-word').hide();
+             $('.left-box').css("width", "100%");
+         }else{
+
              $('.right-box').show();
              $('.first-word').show();
              $('.second-word').show();

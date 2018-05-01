@@ -23,6 +23,7 @@
             overflow:hidden;
             position:relative;
             background: darkgrey;
+            margin-bottom: 10px;
         }
         .scroll {
             /*width的大小是根据下面li的长度和多少个li而定的，需注意！*/
@@ -37,10 +38,29 @@
             line-height:40px;
             text-align:center;
         }
+        .volume{
+            width: 50px;
+            height: 40px;
+            background: darkgrey;
+            position: relative;
+            top: 40px;
+            z-index: 100;
+        }
+        .volume img{
+            width: 50px;
+            height: 40px;
+        }
     </style>
 </head>
 <body>
+    <div class="volume">
+        {% load static %}
+        <img class="volume-1" style="display: inherit" src="{% static 'images/volume-01.png'%}">
+        <img class="volume-2" style="display: none" src="{% static 'images/volume-02.png'%}">
+        <img class="volume-3" style="display: none" src="{% static 'images/volume-03.png'%}">
+    </div>
     <div class="winBox">
+        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
         <ul class="scroll">
             <li><a href="#">广告位：这是第1个广告</a></li>
             <li><a href="#">广告位：这是第2个广告</a></li>
@@ -56,11 +76,39 @@
         </ul>
     </div>
 
-
     <script>
+        $('.volume-1').click(function () {
+            $(this).hide();
+            $('.volume-2').show();
+        });
         var num = 0;
         var timer;
+        var volume;
         var adv_scroll = function(){
+            clearInterval(volume);
+            function change_volume(){
+                if($('.volume-2').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
+                    $('.volume-1').hide();
+                    $('.volume-2').show();
+                    $('.volume-3').hide();
+                    return;
+                }
+                if($('.volume-1').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
+                    $('.volume-1').hide();
+                    $('.volume-2').hide();
+                    $('.volume-3').show();
+                    return;
+                }
+                if($('.volume-1').css('display') == 'none' && $('.volume-2').css('display') == 'none'){
+                    $('.volume-1').show();
+                    $('.volume-2').hide();
+                    $('.volume-3').hide();
+                    return;
+                }
+            }
+
+            volume = setInterval(change_volume, 800);
+
             clearInterval(timer);
             $('.winBox').css("width", $('.nav-box').width());
             $('.scroll').css("width", $('.scroll > li').length * 300);

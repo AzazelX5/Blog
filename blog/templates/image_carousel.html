@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>图片轮播插件</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/orbit-1.2.3.css'%}">
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery.orbit-1.2.3.min.js'%}"></script>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .container{
+            width: 100%;
+            height: 250px;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="featured">
+            <a href="#" data-caption="#adv-image-info-00"><img src="{% static 'images/carousel_plugin/adv-test-00.jpg'%}" ></a>
+            <a href="#" data-caption="#adv-image-info-01"><img src="{% static 'images/carousel_plugin/adv-test-01.jpg'%}" ></a>
+            <a href="#" data-caption="#adv-image-info-02"><img src="{% static 'images/carousel_plugin/adv-test-02.jpg'%}" ></a>
+            <a href="#" data-caption="#adv-image-info-03"><img src="{% static 'images/carousel_plugin/adv-test-03.jpg'%}" ></a>
+            <a href="#" data-caption="#adv-image-info-04"><img src="{% static 'images/carousel_plugin/adv-test-04.jpg'%}" ></a>
+        </div>
+        <span class="orbit-caption" id="adv-image-info-00">图片轮播插件</span>
+        <span class="orbit-caption" id="adv-image-info-01">来看妹子图吧</span>
+        <span class="orbit-caption" id="adv-image-info-02">还是妹子图</span>
+        <span class="orbit-caption" id="adv-image-info-03">还是妹子图</span>
+        <span class="orbit-caption" id="adv-image-info-04">哈哈，还是妹子图</span>
+    </div>
+
+    <script type="text/javascript">
+         // 网页加载完成时
+        $(window).load(function () {
+            $('.container img').css({
+                "width": $('.container').width(),
+                "height": $('.container').height(),
+            });
+            $('#featured').orbit();
+        });
+        // // 窗口大小改变时
+        // $(window).resize(function () {
+        //     if($('.container').css("display") == "none"){
+        //         $('.container').show();
+        //     }else{
+        //         $('.container').hide();
+        //     }
+        //
+        //     $('.container img').css({
+        //         "width": $('.container').width(),
+        //         "height": $('.container').height(),
+        //     });
+        //     $('#featured').orbit()
+        // });
+    </script>
+</body>
+</html>
