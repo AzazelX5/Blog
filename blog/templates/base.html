@@ -14,6 +14,8 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- 图片旋转插件 -->
     <script type="text/javascript" src="{% static 'js/jquery.rotate.min.js'%}"></script>
+    <!-- 复制到剪切板功能插件 -->
+    <script type="text/javascript" src="{% static 'js/clipboard.min.js'%}"></script>
     <style>
         *{
             margin: 0;
@@ -24,6 +26,7 @@
             line-height: 20px;
             background-color: #eee;
         }
+        a,a:hover{ text-decoration:none; color:#333}
         .top-box{
             width: 100%;
             height: 100px;
@@ -123,7 +126,7 @@
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                       <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                      <span>未登录 </span>
+                      <span id="login_status"> </span>
                       <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'adaptive' 'login' %}">登录</a></li>

@@ -44,15 +44,7 @@
             transform: scale(1.2);
         }
         .excerpt .note {
-            color: #777;
-            line-height: 26px;
-            font-size: 15px;
-            margin-bottom: 0;
-            font-style: normal;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 3;
-            overflow: hidden;
+            display: none;
         }
 
         .excerpt p{
@@ -156,6 +148,18 @@
                     }
                 }
                 $(this).text(text);
+                $(this).show();
+                $(this).css({
+                    "color": "#777",
+                    "line-height": "26px",
+                    "font-size": "15px",
+                    "margin-bottom": "0",
+                    "font-style": "normal",
+                    "display": "-webkit-box",
+                    "-webkit-box-orient": "vertical",
+                    "-webkit-line-clamp": "3",
+                    "overflow": "hidden",
+                })
             });
          });
     </script>

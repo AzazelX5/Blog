@@ -11,9 +11,6 @@
         li {
             list-style:none;
         }
-        a {
-            text-decoration:none;
-        }
         img {
             border:none;
         }
@@ -39,7 +36,7 @@
             text-align:center;
         }
         .volume{
-            width: 50px;
+            width: 42px;
             height: 40px;
             background: darkgrey;
             position: relative;
@@ -47,14 +44,18 @@
             z-index: 100;
         }
         .volume img{
-            width: 50px;
+            width: 42px;
             height: 40px;
+        }
+        .volume img:hover{
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <div class="volume">
         {% load static %}
+        <img class="volume-0" style="display: none" src="{% static 'images/volume-00.png'%}">
         <img class="volume-1" style="display: inherit" src="{% static 'images/volume-01.png'%}">
         <img class="volume-2" style="display: none" src="{% static 'images/volume-02.png'%}">
         <img class="volume-3" style="display: none" src="{% static 'images/volume-03.png'%}">
@@ -77,52 +78,50 @@
     </div>
 
     <script>
-        $('.volume-1').click(function () {
-            $(this).hide();
-            $('.volume-2').show();
-        });
+        // 设置广告滚动条效果
         var num = 0;
         var timer;
+        function goLeft() {
+            if (num == -1500) {
+                num = 0;
+            }
+            num -= 1;
+            $(".scroll").css({
+                left: num
+            })
+        }
+
+        // 设置广告滚动条开始的喇叭闪烁效果
         var volume;
+        function change_volume(){
+            if($('.volume-2').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
+                $('.volume-1').hide();
+                $('.volume-2').show();
+                $('.volume-3').hide();
+                return;
+            }
+            if($('.volume-1').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
+                $('.volume-1').hide();
+                $('.volume-2').hide();
+                $('.volume-3').show();
+                return;
+            }
+            if($('.volume-1').css('display') == 'none' && $('.volume-2').css('display') == 'none'){
+                $('.volume-1').show();
+                $('.volume-2').hide();
+                $('.volume-3').hide();
+                return;
+            }
+        }
+
         var adv_scroll = function(){
             clearInterval(volume);
-            function change_volume(){
-                if($('.volume-2').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
-                    $('.volume-1').hide();
-                    $('.volume-2').show();
-                    $('.volume-3').hide();
-                    return;
-                }
-                if($('.volume-1').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
-                    $('.volume-1').hide();
-                    $('.volume-2').hide();
-                    $('.volume-3').show();
-                    return;
-                }
-                if($('.volume-1').css('display') == 'none' && $('.volume-2').css('display') == 'none'){
-                    $('.volume-1').show();
-                    $('.volume-2').hide();
-                    $('.volume-3').hide();
-                    return;
-                }
-            }
-
             volume = setInterval(change_volume, 800);
 
             clearInterval(timer);
             $('.winBox').css("width", $('.nav-box').width());
             $('.scroll').css("width", $('.scroll > li').length * 300);
 
-            function goLeft() {
-                //750是根据你给的尺寸，可变的
-                if (num == -1500) {
-                    num = 0;
-                }
-                num -= 1;
-                $(".scroll").css({
-                    left: num
-                })
-            }
             //设置滚动速度
             timer = setInterval(goLeft, 20);
             //设置鼠标经过时滚动停止
@@ -131,11 +130,32 @@
                     clearInterval(timer);
                 },
                 function() {
-                    clearInterval(timer);
-                    timer = setInterval(goLeft, 20);
+                    if($('.volume-0').css('display') == 'none'){
+                        clearInterval(timer);
+                        timer = setInterval(goLeft, 20);
+                    }else{
+                        clearInterval(timer);
+                    }
                 }
             );
         };
+
+        $('.volume-1, .volume-2, .volume-3').click(function () {
+            $('.volume-0').show();
+            $('.volume-1').hide();
+            $('.volume-2').hide();
+            $('.volume-3').hide();
+            clearInterval(volume);
+            clearInterval(timer);
+        });
+        $('.volume-0').click(function () {
+            $('.volume-0').hide();
+            $('.volume-1').show();
+            $('.volume-2').hide();
+            $('.volume-3').hide();
+            volume = setInterval(change_volume, 800);
+            timer = setInterval(goLeft, 20);
+        });
     </script>
 
 </body>
