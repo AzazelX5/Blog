@@ -84,7 +84,7 @@
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#">学习笔记</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">其他</a></li>
+                                <li><a href="#">其它</a></li>
                             </ul>
                         </div>
                     </span>
@@ -226,7 +226,7 @@
                 success:function (data) {
                     if (data["result"] == 'ok'){
                         alert("上传成功！");
-                        window.location.href = "/blog/article/{0}/".format(data.uuid);
+                        window.location.href = "/blog/article/{0}/{1}/".format(data.uuid, 1);
                     }else{
                         alert('上传失败！');
                     }

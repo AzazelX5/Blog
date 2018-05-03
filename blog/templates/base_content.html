@@ -23,6 +23,9 @@
     .container-fluid{
         /*border: darkorange 1px solid;*/
     }
+    /*#category-02:hover{*/
+        /*cursor: pointer;*/
+    /*}*/
 </style>
 <div class="container-fluid">
     <!-- 页面主体 -->
@@ -31,9 +34,9 @@
         <div class="col-md-8 left-box">
             <div class="path-nav">
                 <ol class="breadcrumb">
-                    <li><a href="#"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-                    <li><a href="#">技术杂谈</a></li>
-                    <li class="active">Python</li>
+                    <li id="category-01"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+                    <li id="category-02"><a></a></li>
+                    <li id="category-03"><a href="{% url 'category' category_name %}"></a></li>
                 </ol>
             </div>
             {% block left_content %}{% endblock %}
@@ -51,23 +54,36 @@
     </div>
 </div>
 <script>
-    // var change_right_info = function(){
-    //     var _width = $(window).width();
-    //     $('.width-info').text(_width);
-    //     $('.left-width-info').text($('.container-fluid').width());
-    //     // if(_width <= 1336){
-    //
-    //     // }
-    // };
-    //
-    // // 网页加载完成时
-    // $(window).load(function () {
-    //     change_right_info();
-    // });
-    // // 窗口大小改变时
-    // $(window).resize(function () {
-    //     change_right_info();
-    // });
+    // 网页加载完成时
+    $(window).load(function () {
+        if("{{ category_name }}" == '主页'){
+            $('#category-01').addClass("actice");
+            $('#category-02').hide();
+            $('#category-03').hide();
+        }else{
+            if("{{ category_super }}" != "False"){
+                $('#category-02').find('a').text("{{ category_super }}");
+                $('#category-03').find('a').text("{{ category_name }}");
+                $('#category-03').addClass("actice");
+            }else{
+                $('#category-03').hide();
+                $('#category-02').find('a').text("{{ category_name }}");
+                $('#category-02').addClass("actice");
+            }
+        }
+
+
+        if($('#category-02').find('a').text() == "学习笔记" || $('#category-02').find('a').text() == "其它"){
+            $('#category-02').find('a').attr('href', "/blog/category/"+ $('#category-02').find('a').text() + "/");
+        }else{
+            $('#category-02').find('a').attr('href', "/blog/category_super/"+ $('#category-02').find('a').text() + "/");
+        }
+
+    });
+    // 窗口大小改变时
+    $(window).resize(function () {
+
+    });
 
 </script>
 

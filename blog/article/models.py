@@ -66,9 +66,9 @@ class Article(models.Model):
     # 好评数
     praise = models.IntegerField(default=0)
     # 浏览量
-    visits_num = models.IntegerField(default=0)
+    visits_num = models.IntegerField(default=-1)
     # 创建时间
-    create_time = models.DateTimeField(auto_now=now())
+    create_time = models.DateTimeField(auto_now_add=now())
     # 外键：评论
     # comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
     # 外键:作者
@@ -85,7 +85,7 @@ class Article(models.Model):
         self.praise += 1
 
         return {
-            'result': 'ok!',
+            'status': True,
             'reason': None,
         }
 
@@ -97,6 +97,6 @@ class Article(models.Model):
         self.visits_num += 1
 
         return {
-            'result': 'ok!',
+            'status': True,
             'reason': None,
         }

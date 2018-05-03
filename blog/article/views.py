@@ -17,6 +17,17 @@ from . import models
 # Create your views here.
 
 
+CATEGORY_DICT = {
+    'Python': '技术杂谈',
+    'Django': '技术杂谈',
+    'Java': '技术杂谈',
+    'Git': '技术杂谈',
+    'Ngrok': '技术杂谈',
+    '学习笔记': False,
+    '其它': False,
+}
+
+
 def adaptive_view(request, url):
     """
     适配简单页面视图
@@ -36,26 +47,80 @@ def home_view(request):
     :param request:
     :return:
     # """
-    # if request.session.get('name'):
-    #     del request.session['name']
-    # else:
-    #     request.session['name'] = 'Azazel'
     article_list = models.Article.objects.order_by("-create_time")
 
-    return render(request, 'home.html', {'article_list': list(article_list)})
+    return render(request, 'home.html', {'article_list': list(article_list),
+                                         'category_name': '主页',
+                                         })
 
 
-def get_article_view(request, uuid):
+def get_article_view(request, uuid, num):
     """
     展示文章页面视图
     :param request:
     :param uuid: 文章uuid
+    :param num: 增加文章点击量(num=1)或者好评量(num=2)
     :return:
     """
     if request.method == 'GET':
         article = models.Article.objects.get(uuid=uuid)
+        if num == 1:
+            # 增加点击量
+            result = article.change_visits_num()
+
+            if result['status']:
+                article.save()
+                print("浏览量增加成功！")
+        else:
+            # 增加好评量
+            result = article.change_praise()
+            print(result)
+            if result['status']:
+                article.save()
+
+                print("好评量增加成功！好评量为：{0}".format(article.praise))
+
+            return JsonResponse({'status': True, 'praise_num': article.praise})
 
         return render(request, 'article.html', {'article': article})
+
+
+def get_article_by_category_view(request, category):
+    """
+    按类别查询
+    :param request:
+    :param category: 类别
+    :return:
+    """
+    if request.method == 'GET':
+        article_list = models.Article.objects.filter(category=category).order_by(
+            "-create_time")
+        return render(request, 'home.html',
+                      {'article_list': list(article_list),
+                       'category_name': category,
+                       'category_super': CATEGORY_DICT[category]})
+
+
+def get_article_super_category_view(request, category_super):
+    """
+    按总类别查询子类别所有内容
+    :param request:
+    :param category_super: 总类别
+    :return:
+    """
+    if request.method == 'GET':
+        category_list = []
+        for k, v in CATEGORY_DICT.items():
+            if v == category_super:
+                category_list.append(k)
+        print(category_list)
+        article_list = models.Article.objects.filter(category__in=category_list)\
+            .order_by("-create_time")
+        print(article_list)
+        return render(request, 'home.html',
+                      {'article_list': list(article_list),
+                       'category_name': category_super,
+                       'category_super': False})
 
 
 def upload_image_view(request):

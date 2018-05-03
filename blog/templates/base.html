@@ -24,7 +24,7 @@
             line-height: 20px;
             background-color: #eee;
         }
-        a,a:hover{ text-decoration:none; color:#333}
+        a,a:hover,a:visited,a:active,a:focus{ text-decoration:none; color:#333}
         .top-box{
             width: 100%;
             height: 100px;
@@ -85,7 +85,7 @@
         <nav class="navbar navbar-default">
           <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
+            <div class="navbar-header active">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
@@ -98,20 +98,20 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li class="dropdown">
+                <li class="dropdown" id="technical_talks">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">技术杂谈 <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a href="#">Python</a></li>
-                    <li><a href="#">Java</a></li>
-                    <li><a href="#">Django</a></li>
+                    <li><a href="{% url 'category' 'Python' %}">Python</a></li>
+                    <li><a href="{% url 'category' 'Java' %}">Java</a></li>
+                    <li><a href="{% url 'category' 'Django' %}">Django</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="#">Git</a></li>
+                    <li><a href="{% url 'category' 'Git' %}">Git</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="#">Ngrok</a></li>
+                    <li><a href="{% url 'category' 'Ngrok' %}">Ngrok</a></li>
                   </ul>
                 </li>
-                <li class=""><a href="#">学习笔记 <span class="sr-only">(current)</span></a></li>
-                <li class="active"><a href="#">其他</a></li>
+                <li id="study_note"><a href="{% url 'category' '学习笔记' %}">学习笔记 <span class="sr-only">(current)</span></a></li>
+                <li id="else"><a href="{% url 'category' '其它' %}">其它</a></li>
               </ul>
               <form class="navbar-form navbar-left">
                 <div class="form-group">
@@ -182,7 +182,6 @@
      // 适配页面大小
      var change_nav = function(){
          var _width = $(window).width();
-
          if(_width <= 1200){
              $('.nav-box').css("padding", "0");
              $('.middle').css("margin", "0");
@@ -209,6 +208,11 @@
                  "float": "",
                  "padding": "5px",
              });
+         }
+         if(_width <= 1030){
+             $('.article-time').hide();
+         }else{
+             $('.article-time').show();
          }
          if(_width <= 995){
              $('.right-box').hide();
@@ -271,6 +275,14 @@
              $('#login_status').text("未登录！");
          }else{
              $('#login_status').text(login_status_name);
+         }
+
+         if("{{ category_name }}" == "学习笔记"){
+             $('#study_note').addClass("active");
+         }else if("{{ category_name }}" == "其它"){
+             $('#else').addClass("active");
+         }else{
+             $('#technical_talks').addClass("active");
          }
      });
      // 窗口大小改变时

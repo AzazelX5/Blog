@@ -20,7 +20,11 @@ urlpatterns = [
     # 主页
     path('home/', views.home_view, name='home'),
     # 文章页面
-    path('article/<uuid:uuid>/', views.get_article_view, name='article'),
+    path('article/<uuid:uuid>/<int:num>/', views.get_article_view, name='article'),
+    # 按类型查找文章功能
+    path('category/<str:category>/', views.get_article_by_category_view, name='category'),
+    # 按总类型查找所有子类型文章功能
+    path('category_super/<str:category_super>/', views.get_article_super_category_view, name='category_super'),
     # 保存文章
     path('save_article/', views.save_article_view, name='save_article'),
     # 登录时接收客户端验证码功能

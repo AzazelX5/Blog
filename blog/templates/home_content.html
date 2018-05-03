@@ -57,6 +57,12 @@
         .label-info{
             font-size: 18px;
         }
+        .comment:hover{
+            cursor: not-allowed;
+        }
+        .praise:hover{
+            cursor: pointer;
+        }
     </style>
     {% for article in article_list %}
         <article class="excerpt">
@@ -65,19 +71,19 @@
             <header>
                 <!-- 文章标签 -->
                 <a href="#">
-                    <span class="label label-info">python</span>
+                    <span class="label label-info">{{ article.category }}</span>
                 </a>
                 <h2>
-                    <a href="{% url 'article' article.uuid %}">
+                    <a href="{% url 'article' article.uuid 1 %}">
                         <span>{{article.name}}</span>
                     </a>
                 </h2>
             </header>
             <!-- 中部左边图片 -->
-            <div class="focus">
-                <a href="{% url 'article' article.uuid %}">
+            <div class="focus" name="{{ article.category }}">
+                <a href="{% url 'article' article.uuid 1 %}">
                     {% load static %}
-                    <img src="{% static 'images/python.jpg'%}" width="200" height="120">
+                    <img src="" width="200" height="120">
                 </a>
             </div>
             <!-- 中部右边简介 -->
@@ -87,27 +93,27 @@
             <!-- 底部文章信息区 -->
             <p class="article-info">
                 <span class="muted">
-                    <a href="#">
+                    <a class="comment">
                         <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
                         <span>评论(0)</span>
                     </a>
                 </span>
-                <span class="muted">
-                    <a href="#">
+                <span class="muted praise"  id="{{ article.uuid }}">
+                    <a>
                         <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                        <span style="color: crimson">好评(0)</span>
+                        <span name="11" style="color: crimson">好评({{ article.praise }})</span>
                     </a>
                 </span>
                 <span class="muted">
                     <a>
                         <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                        <span>浏览量(0)</span>
+                        <span>浏览量({{ article.visits_num }})</span>
                     </a>
                 </span>
-                <span class="muted">
+                <span class="muted article-time">
                     <a>
                         <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
-                        <span>时间</span>
+                        <span>{{ article.create_time }}</span>
                     </a>
                 </span>
                 <span class="muted">
@@ -127,6 +133,29 @@
         </article>
     {% endfor %}
     <script>
+         // 格式化字符串format函数
+         String.prototype.format = function(args) {
+            var result = this;
+            if (arguments.length > 0) {
+                if (arguments.length == 1 && typeof (args) == "object") {
+                    for (var key in args) {
+                        if(args[key]!=undefined){
+                            var reg = new RegExp("({" + key + "})", "g");
+                            result = result.replace(reg, args[key]);
+                        }
+                    }
+                }
+                else {
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (arguments[i] != undefined) {
+                            var reg= new RegExp("({)" + i + "(})", "g");
+                            result = result.replace(reg, arguments[i]);
+                        }
+                    }
+                }
+            }
+            return result;
+         };
         function removeHTMLTag(str) {
 
             str = str.replace(/<\/?[^>]*>/g,''); //去除HTML tag
@@ -161,6 +190,48 @@
                     "overflow": "hidden",
                 })
             });
+            $('.focus').each(function () {
+                var category_name = $(this).attr('name');
+
+                if(category_name == "Python"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Python.jpg' %}");
+                }else if(category_name == "Django"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Django.jpg' %}");
+                }else if(category_name == "Java"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Java.jpg' %}");
+                }else if(category_name == "Git"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Git.jpg' %}");
+                }else if(category_name == "Ngrok"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Ngrok.jpg' %}");
+                }else if(category_name == "其它"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/qita.jpg' %}");
+                }else if(category_name == "学习笔记"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/study.jpg' %}");
+                }
+
+
+
+            });
          });
+        $('.praise').click(function () {
+            var uuid = $(this).attr('id');
+            var praise_text = $(this).find('span:last-child')
+            $.ajax({
+                url: "/blog/article/"+uuid+"/2/",
+                type:"GET",
+                success:function (data) {
+                    if (data.status){
+                        praise_text.text("好评("+data.praise_num+")")
+                    }else{
+                        alert('好评失败！');
+                    }
+
+                },
+                error:function () {
+                    alert('服务器出错！');
+                }
+
+            })
+        });
     </script>
 {% endblock %}
