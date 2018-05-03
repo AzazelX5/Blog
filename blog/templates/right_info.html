@@ -34,17 +34,12 @@
             /*left: o;*/
             height: 70px;
         }
-        .auth-info img:hover{
-            cursor: pointer;
-        }
-        .weixin, .tim, .email, .github{
+        .WeChat, .Tim, .Email, .GitHub, .Coding{
             float: left;
+            opacity: 0.8;
         }
         ._auth-info-mr{
             margin-right: 25px;
-        }
-        .coding{
-           float: right;
         }
         .hot-topics{
             clear: both;
@@ -99,20 +94,30 @@
         </div>
         <div class="auth-info _default-box-style">
             <ul>
-                <li class="weixin _auth-info-mr" name="WeChat">
-                    <a><img src="{% static 'images/weixin.png'%}"></a>
+                <li>
+                    <button class="btn WeChat _auth-info-mr"  style="border: 0; padding: 0; outline: none;" name="WeChat">
+                        <img src="{% static 'images/weixin.png'%}">
+                    </button>
                 </li>
-                <li class="tim _auth-info-mr" name="Tim">
-                    <a><img src="{% static 'images/tim.png'%}"></a>
+                <li>
+                    <button class="btn Tim _auth-info-mr"  style="border: 0; padding: 0; outline: none;" name="Tim">
+                        <img src="{% static 'images/tim.png'%}">
+                    </button>
                 </li>
-                <li class="email _auth-info-mr" data-clipboard-target="#copy-text" name="Email">
-                    <a><img src="{% static 'images/email.png'%}"></a>
+                <li>
+                    <button class="btn Email _auth-info-mr"  style="border: 0; padding: 0; outline: none;" data-clipboard-target="#copy-text" name="Email">
+                        <img src="{% static 'images/email.png'%}">
+                    </button>
                 </li>
-                <li class="github _auth-info-mr"  name="GitHub">
-                    <a href="https://github.com/AzazelX5/" target="_blank"><img src="{% static 'images/github.png'%}"></a>
+                <li>
+                    <button class="btn GitHub _auth-info-mr"  style="border: 0; padding: 0; outline: none;" name="GitHub">
+                        <a href="https://github.com/AzazelX5/" target="_blank"><img src="{% static 'images/github.png'%}"></a>
+                    </button>
                 </li>
-                <li class="coding"  name="Coding">
-                    <a href="https://coding.net/u/Azazel/" target="_blank"><img src="{% static 'images/coding.png'%}"></a>
+                <li>
+                    <button class="btn Coding"  style="border: 0; padding: 0; outline: none;" name="Coding">
+                        <a href="https://coding.net/u/Azazel/" target="_blank"><img src="{% static 'images/coding.png'%}"></a>
+                    </button>
                 </li>
             </ul>
         </div>
@@ -130,85 +135,156 @@
         {% include 'image_carousel.html' %}
     </div>
 
-
-
-
-
     <script>
-        $('.hot-topics span').click(function () {
-           alert($('.img-carousel').width());
-        });
+        // 查找元素在数组中的位置方法
+        Array.prototype.indexOf = function(val) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == val) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+        // 删除数组中元素方法
+        Array.prototype.remove = function(val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
+        // 数组去重方法
+        Array.prototype.distinct = function (){
+            var arr = this,
+            i,
+            obj = {},
+            result = [];
+            for(i = 0; i< arr.length; i++){
+                if(!obj[arr[i]]){ //如果能查找到，证明数组元素重复了
+                    obj[arr[i]] = 1;
+                    result.push(arr[i]);
+                }
+            }
+            return result;
+        };
 
-        $('.weixin, .tim, .email, .github, .coding').hover(function () {
+        // 用来控制展示作者信息的动画效果
+        var wtegc_list = ['.WeChat', '.Tim', '.Email', '.GitHub', '.Coding'];
+        var set_disabled = function(name, status,){
+            wtegc_list = wtegc_list.distinct();
+            if(status){
+                 wtegc_list.remove(name);
+            }else{
+                wtegc_list.push(name);
+            }
+            wtegc_list = wtegc_list.distinct();
+            for(i = 0; i <= wtegc_list.length-1; i++ ){
+                $(wtegc_list[i]).attr('disabled', status);
+            }
+        };
+        // 展示作者信息栏鼠标滑过效果
+        var name;
+        $('.WeChat, .Tim, .Email, .GitHub, .Coding').hover(function () {
+            $(this).css("opacity", "1.5");
             // WeChat
             if($(this).attr("name") == "WeChat"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
                 $('.show-info img').show();
                 $('.show-info-text').show();
 
                 $('.prompt-box .box-text').text($(this).attr("name"));
                 $('.prompt-box').css("left", 13);
-                $('.prompt-box').show("slow");
+                $('.prompt-box').show(300);
 
                 $('.show-info img').attr("src", "{% static 'images/erweima.jpg'%}");
                 $('#copy-text').text("没想到吧，还是妹子图!");
                 $('.show-info-text div:last-child').text("皮一下特别开心!");
 
-                $('.show-info').show("slow");
+                $('.show-info').show(300);
 
+                return;
             }
             // Tim
             if($(this).attr("name") == "Tim"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
                 $('.show-info img').show();
                 $('.show-info-text').show();
 
                 $('.prompt-box .box-text').text($(this).attr("name"));
                 $('.prompt-box').css("left", 88);
-                $('.prompt-box').show("slow");
+                $('.prompt-box').show(300);
 
                 $('.show-info img').attr("src", "{% static 'images/erweima1.jpg'%}");
                 $('#copy-text').text("没想到吧，还是妹子图!");
                 $('.show-info-text div:last-child').text("皮一下特别开心!");
 
 
-                $('.show-info').show("slow");
+                $('.show-info').show(300);
+
+                return;
             }
             // Email
             if($(this).attr("name") == "Email"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
                 $('.show-info-text').show();
 
                 $('.prompt-box .box-text').text($(this).attr("name"));
                 $('.prompt-box').css("left", 163);
-                $('.prompt-box').show("slow");
+                $('.prompt-box').show(300);
 
                 $('#copy-text').text("azazel.zhao@live.cn");
                 $('.show-info-text div:last-child').text("(点击图标自动复制地址)");
 
-                $('.show-info').show("slow");
+                $('.show-info').show(300);
+
+                return;
             }
             // GitHub
             if($(this).attr("name") == "GitHub"){
+               name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
                 $('.prompt-box .box-text').text($(this).attr("name"));
                 $('.prompt-box').css("left", 238);
-                $('.prompt-box').show("slow");
+                $('.prompt-box').show(300);
+
+                return;
             }
             // Coding
             if($(this).attr("name") == "Coding"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
                 $('.prompt-box .box-text').text($(this).attr("name"));
                 $('.prompt-box').css("left", 313);
-                $('.prompt-box').show("slow");
+                $('.prompt-box').show(300);
+
+                return;
             }
         },
         function () {
-            $('.show-info img').hide("slow");
-            $('.show-info-text').hide("slow");
-            $('.show-info').hide("slow");
-            $('.prompt-box').hide("slow");
+            $(this).css("opacity", "0.8");
+            $(this).attr('disabled', true);
+            $('.show-info img').hide(200);
+            $('.show-info-text').hide(200);
+            $('.show-info').hide(300);
+            $('.prompt-box').hide(300);
             $('#copy-text').text("");
             $('.show-info-text div:last-child').text("");
+
+            setTimeout(function () {
+                set_disabled(name, false);
+            },500);
         });
 
-        $('.email').click(function () {
-            var copy = new ClipboardJS('.email');
+        // 点击复制邮件地址功能
+        $('.Email').click(function () {
+            var copy = new ClipboardJS('.Email');
             copy.on('success', function(e) {
                 $('.show-info-text div:last-child').text("(复制成功！)")
             }) ;

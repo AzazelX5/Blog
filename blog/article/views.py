@@ -96,11 +96,11 @@ def save_article_view(request):
     if request.method == 'POST':
         print(request.body)
         article_dict = json.loads(request.body)
-        author = models.Author.objects.get(name='Azazel')
+        author = models.Author.objects.get(name=article_dict['auth_name'])
         article = models.Article.objects.create(
             name=article_dict['name'],
             content=article_dict['content'],
-            category="Python",
+            category=article_dict['category'],
             author=author,
         )
         data = {

@@ -21,6 +21,31 @@
         .xz-box{
             display: none;
         }
+        ._btn-size{
+            width: 120px;
+            height: 40px;
+            font-size: 15px;
+        }
+        ._input-size{
+            height: 40px;
+            font-size: 15px;
+        }
+        ._span-style{
+            width: 120px;
+            height: 40px;
+            background: #5cb85c;
+            color: white;
+            padding: 12px 0 0 30px;
+            font-size: 15px;
+        }
+        ._border-raduis-style-left{
+            border-bottom-left-radius: 5px;
+            border-top-left-radius: 5px;
+        }
+        ._border-raduis-style-left-none{
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+        }
     </style>
 
     {% load static %}
@@ -30,33 +55,65 @@
     </div>
 
     <!-- 内容 -->
-    <div class="middle">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    文章标题：<input type="text" id="article-name" value="">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon _input-size" style="padding: 0; border: none">
+                        <div class="_span-style _border-raduis-style-left" style="padding-left: 10px">文章标题  :</div>
+                    </span>
+                    <input type="text" id="input-article-name" class="form-control _input-size" placeholder="请输入文章标题">
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-6 edit">
-                    {% load static %}
-                    <p>文章编辑：</p>
-                    <textarea id="content" class="edit-result-box" onkeyup="compile()"></textarea>
-                </div>
-                <div class="col-md-6 show">
-                    <p>文章展示：</p>
-                    <div id="result" class="edit-result-box"></div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <button id="upload" style="width: 80px; height: 30px; font-size: 20px; float: right;">提交</button>
+            <div class="col-md-6 box-sort">
+                <div class="input-group">
+                    <span class="input-group-addon _input-size" style="padding: 0; border: none">
+                        <div class="_span-style _border-raduis-style-left" style="padding-left: 10px">文章类别 :</div>
+                    </span>
+                    <input type="text" id="input-sort" class="form-control _input-size" placeholder="请在右侧选择" disabled="disabled">
+                    <span class="input-group-addon _input-size" style="padding: 0; border: none">
+                        <div class="btn-group">
+                            <button type="button" id="btn-sort" class="btn btn-info dropdown-toggle _btn-size _border-raduis-style-left-none" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                请选择... <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Python</a></li>
+                                <li><a href="#">Java</a></li>
+                                <li><a href="#">Django</a></li>
+                                <li><a href="#">Git</a></li>
+                                <li><a href="#">Ngrok</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">学习笔记</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#">其他</a></li>
+                            </ul>
+                        </div>
+                    </span>
                 </div>
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12 box-edit-btn" style="display: none">
+                <button id="btn-edit" class="btn btn-warning" style="margin: 20px 0 5px 0; width: 120px; height: 40px; font-size: 15px;">文章编辑</button>
+                <button id="btn-show" class="btn btn-warning" style="margin: 20px 0 5px 0; width: 120px; height: 40px; font-size: 15px; float: right;">文章预览</button>
+            </div>
+            <div class="col-md-6" id="edit_box">
+                <div class="_span-style" style="border-radius: 5px; margin: 20px 0 5px 0; background: #f0ad4e">文章编辑 :</div>
+                <textarea id="content" class="edit-result-box" onkeyup="compile()"></textarea>
+            </div>
+            <div class="col-md-6" id="show_box">
+                <div class="_span-style" style="border-radius: 5px; margin: 20px 0 5px 0; background: #f0ad4e">文章预览 :</div>
+                <div id="result" class="edit-result-box"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <button id="upload" style="width: 80px; height: 30px; font-size: 20px; float: right;">提交</button>
+            </div>
+        </div>
     </div>
 
      {% load static %}
@@ -66,8 +123,16 @@
      <script type="text/javascript" src="{% static 'js/dropzone.js'%}"></script>
      <!-- Markdown插件 -->
      <script type="text/javascript" src="{% static 'js/showdown.min.js'%}"></script>
+    <!-- 图片旋转插件 -->
+    <script type="text/javascript" src="{% static 'js/jquery.rotate.min.js'%}"></script>
 
      <script>
+         // 文章类型选择功能
+         $('li').click(function () {
+             $('#input-sort').attr("value", $(this).text());
+             $('#btn-sort').html($(this).text() + " <span class='caret'></span>");
+         });
+
          // 格式化字符串format函数
          String.prototype.format = function(args) {
             var result = this;
@@ -142,14 +207,17 @@
         // 文章上传
         $('#upload').click(function () {
             // 获取文章标题
-            var name = $('#article-name').val();
+            var name = $('#input-article-name').val();
             // 获取文章内容并转换为markdown
             var text = $('#content').val();
             var converter = new showdown.Converter();
             var html = converter.makeHtml(text);
             var data = {
-                name:name,
-                content:html,
+                name: name,
+                content: html,
+                auth_name: "{{ request.session.name }}",
+                category: $('#input-sort').attr("value"),
+
             };
             $.ajax({
                 url:"{% url 'save_article' %}",
@@ -231,5 +299,34 @@
                 });
             }
         });
+
+        // 小页面编辑预览框切换功能
+         
+        // 适配页面大小
+         var change_edit_page = function() {
+             var _width = $(window).width();
+             if(_width <= 991){
+                $('.box-sort').css("margin-top", "30px");
+                $('.container-fluid').css("padding", "0 5px");
+                $('.box-edit-btn').show();
+                $('#show_box').hide();
+                $('#edit_box div').hide();
+             }else{
+                $('.box-sort').css("margin-top", "");
+                $('.container-fluid').css("padding", "");
+                $('.box-edit-btn').hide();
+                $('#show_box').show();
+                $('#edit_box div').show();
+             }
+         };
+
+         // 网页加载完成时
+         $(window).load(function () {
+             change_edit_page();
+         });
+         // 窗口大小改变时
+         $(window).resize(function () {
+             change_edit_page();
+         });
     </script>
 {% endblock %}
