@@ -50,6 +50,9 @@
         .excerpt p{
             clear: both;
         }
+        .excerpt .article-info{
+            padding-top: 5px;
+        }
         .excerpt .article-info .muted{
             float: right;
             margin-right: 20px;
@@ -249,6 +252,12 @@
                     $(this).find('img').attr('src', "{% static 'images/article_category/Django.jpg' %}");
                 }else if(category_name == "Java"){
                     $(this).find('img').attr('src', "{% static 'images/article_category/Java.jpg' %}");
+                }else if(category_name == "Ansible") {
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Ansible.jpg' %}");
+                }else if(category_name == "Drone") {
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Drone.jpg' %}");
+                }else if(category_name == "Docker") {
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Docker.jpg' %}");
                 }else if(category_name == "Git"){
                     $(this).find('img').attr('src', "{% static 'images/article_category/Git.jpg' %}");
                 }else if(category_name == "Ngrok"){

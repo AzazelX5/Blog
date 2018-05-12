@@ -62,8 +62,8 @@
             display: none;
         }
         .show-info img{
-            max-width: 300px;
-            height: auto;
+            width: auto;
+            max-height: 400px;
         }
         .box-text{
             width: 65px;
@@ -197,9 +197,7 @@
                 $('.prompt-box').css("left", 13);
                 $('.prompt-box').show(300);
 
-                $('.show-info img').attr("src", "{% static 'images/erweima.jpg'%}");
-                $('#copy-text').text("没想到吧，还是妹子图!");
-                $('.show-info-text div:last-child').text("皮一下特别开心!");
+                $('.show-info img').attr("src", "{% static 'images/my_info/QR_code_WChat.png'%}");
 
                 $('.show-info').show(300);
 
@@ -217,9 +215,7 @@
                 $('.prompt-box').css("left", 88);
                 $('.prompt-box').show(300);
 
-                $('.show-info img').attr("src", "{% static 'images/erweima1.jpg'%}");
-                $('#copy-text').text("没想到吧，还是妹子图!");
-                $('.show-info-text div:last-child').text("皮一下特别开心!");
+                $('.show-info img').attr("src", "{% static 'images/my_info/QR_code_Tim.png'%}");
 
 
                 $('.show-info').show(300);
