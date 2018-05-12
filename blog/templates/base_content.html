@@ -34,9 +34,10 @@
         <div class="col-md-8 left-box">
             <div class="path-nav">
                 <ol class="breadcrumb">
-                    <li id="category-01"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-                    <li id="category-02"><a></a></li>
-                    <li id="category-03"><a href="{% url 'category' category_name %}"></a></li>
+                    <li id="category-01"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;主页</a></li>
+                    <li id="category-02" style="display: none"><a></a></li>
+                    <li id="category-03" style="display: none"><a></a></li>
+                    <li id="category-04" style="display: none"></li>
                 </ol>
             </div>
             {% block left_content %}{% endblock %}
@@ -44,39 +45,35 @@
         <!-- 右边信息区 -->
         <div class="col-md-4 right-box">
             {% include 'right_info.html' %}
-            <div class="width-info">
-
-            </div>
-            <div class="left-width-info">
-
-            </div>
         </div>
     </div>
 </div>
 <script>
     // 网页加载完成时
     $(window).load(function () {
-        if("{{ category_name }}" == '主页'){
-            $('#category-01').addClass("actice");
-            $('#category-02').hide();
-            $('#category-03').hide();
-        }else{
-            if("{{ category_super }}" != "False"){
-                $('#category-02').find('a').text("{{ category_super }}");
-                $('#category-03').find('a').text("{{ category_name }}");
-                $('#category-03').addClass("actice");
-            }else{
-                $('#category-03').hide();
-                $('#category-02').find('a').text("{{ category_name }}");
-                $('#category-02').addClass("actice");
-            }
-        }
+        if("{{ status }}" == 1){
+            $('#category-02').show();
+            $('#category-02 a').attr("href", "/blog/category_super/{{ category_super }}/");
+            $('#category-02 a').text("{{ category_super }}");
+        }else if("{{ status }}" == 2) {
+            $('#category-02').show();
+            $('#category-02 a').attr("href", "/blog/category_super/{{ category_super }}/");
+            $('#category-02 a').text("{{ category_super }}");
 
+            $('#category-03').show();
+            $('#category-03 a').attr("href", "/blog/category/{{ category_name }}/");
+            $('#category-03 a').text("{{ category_name }}");
+        }else if("{{ status }}" == 3) {
+            $('#category-02').show();
+            $('#category-02 a').attr("href", "/blog/category_super/{{ category_super }}/");
+            $('#category-02 a').text("{{ category_super }}");
 
-        if($('#category-02').find('a').text() == "学习笔记" || $('#category-02').find('a').text() == "其它"){
-            $('#category-02').find('a').attr('href', "/blog/category/"+ $('#category-02').find('a').text() + "/");
-        }else{
-            $('#category-02').find('a').attr('href', "/blog/category_super/"+ $('#category-02').find('a').text() + "/");
+            $('#category-03').show();
+            $('#category-03 a').attr("href", "/blog/category/{{ category_name }}/");
+            $('#category-03 a').text("{{ article.category }}");
+
+            $('#category-04').show();
+            $('#category-04').text("{{ article.name }}")
         }
 
     });

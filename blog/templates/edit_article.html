@@ -44,6 +44,10 @@
         ._btn-width{
             width: 120px;
         }
+        #selection-box{
+            height: 300px;
+            overflow-y: auto;
+        }
     </style>
 
     {% load static %}
@@ -76,15 +80,28 @@
                                 请选择... <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" id="selection-box">
-                                <li><a href="#">Python</a></li>
-                                <li><a href="#">Java</a></li>
-                                <li><a href="#">Django</a></li>
-                                <li><a href="#">Git</a></li>
-                                <li><a href="#">Ngrok</a></li>
+                                <li class="dropdown-header">技术教程：</li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">学习笔记</a></li>
+                                <li class="on_click"><a href="#">Python</a></li>
+                                <li class="on_click"><a href="#">Java</a></li>
+                                <li class="on_click"><a href="#">Django</a></li>
+                                <li class="on_click"><a href="#">Git</a></li>
+                                <li class="on_click"><a href="#">Ngrok</a></li>
+                                <li class="on_click"><a href="#">其它教程</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="#">其它</a></li>
+                                <li class="dropdown-header">笔记专区：</li>
+                                <li role="separator" class="divider"></li>
+                                <li class="on_click"><a href="#">生活笔记</a></li>
+                                <li class="on_click"><a href="#">学习笔记</a></li>
+                                <li class="on_click"><a href="#">其它笔记</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="dropdown-header">问题总结：</li>
+                                <li role="separator" class="divider"></li>
+                                <li class="on_click"><a href="#">Python相关</a></li>
+                                <li class="on_click"><a href="#">Java相关</a></li>
+                                <li class="on_click"><a href="#">Linux相关</a></li>
+                                <li class="on_click"><a href="#">Git相关</a></li>
+                                <li class="on_click"><a href="#">其它问题</a></li>
                             </ul>
                         </div>
                     </span>
@@ -116,7 +133,7 @@
 
      {% load static %}
      <!-- jQuery -->
-     <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
+     <!--<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>-->
      <!-- 文件拖拽上传插件 -->
      <script type="text/javascript" src="{% static 'js/dropzone.js'%}"></script>
      <!-- Markdown插件 -->
@@ -126,7 +143,8 @@
 
      <script>
          // 文章类型选择功能
-         $('#selection-box li').click(function () {
+         $('#selection-box .on_click').click(function () {
+
              $('#input-sort').attr("value", $(this).text());
              $('#btn-sort').html($(this).text() + " <span class='caret'></span>");
          });

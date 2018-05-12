@@ -1,26 +1,93 @@
 {% extends "base_content.html" %}
 {% block left_content %}
     <style>
-        .article-name{
-            border: deeppink 1px solid;
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .article-page{
+            background: white;
+            /*margin-top: -10px;*/
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .article-page .article-name{
+            margin-top: -10px;
+            color: deepskyblue;
         }
         .article{
-            border: forestgreen 1px solid;
+            display: none;
+        }
+        .muted{
+            float: left;
+            margin-right: 20px;
+        }
+        hr{
+            background-color: cyan;
+            height: 1px;
+            border: none;
         }
     </style>
-    <div class="article-name text-center">
-        <h3>{{ article.name }}</h3>
-    </div>
-    <div class="article">
-        {{ article.content }}
+    <div class="article-page">
+        <div class="article-name text-center">
+            <h2>{{ article.name }}</h2>
+            <p class="article-info">
+                <span class="muted">
+                    <a href="{% url 'category' article.category %}">
+                        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                        <span style="color: forestgreen">{{ article.category }}</span>
+                    </a>
+                </span>
+                <span class="muted">
+                    <a href="#">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        <span style="color: forestgreen">{{ article.author.name }}</span>
+                    </a>
+                </span>
+                <span class="muted article-time">
+                    <a style="color: #999;">
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        <span>{{ article.create_time }}</span>
+                    </a>
+                </span>
+                <span class="muted">
+                    <a style="color: #999;">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                        <span>浏览量({{ article.visits_num }})</span>
+                    </a>
+                </span>
+
+                <span class="muted">
+                    <a class="comment" style="color: #999;">
+                        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                        <span>评论(0)</span>
+                    </a>
+                </span>
+            </p>
+
+        </div>
+        <div style="padding-top: 5px;clear: both;"><hr /></div>
+        <div class="article">
+            {{ article.content }}
+        </div>
     </div>
 
-     <script>
-         $(document).ready(function () {
-             var text = $('.article').text();
-             $('.article').html(text);
-             $('.article').css("display", "inherit");
-         });
+
+    {% load static %}
+
+    <script>
+        // 网页加载完成时
+        $(window).load(function () {
+            var text = $('.article').text();
+            // alert(text);
+            $('.article').html(text);
+            $('.article').show();
+
+        });
+        // 窗口大小改变时
+        $(window).resize(function () {
+
+        });
 
     </script>
 {% endblock %}

@@ -38,7 +38,7 @@ class Author(models.Model):
 
     # 注册时间
     create_time = models.DateTimeField(auto_now=now())
-
+    models.BooleanField
     def __str__(self):
         return self.name
 

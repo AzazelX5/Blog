@@ -18,13 +18,22 @@ from . import models
 
 
 CATEGORY_DICT = {
-    'Python': '技术杂谈',
-    'Django': '技术杂谈',
-    'Java': '技术杂谈',
-    'Git': '技术杂谈',
-    'Ngrok': '技术杂谈',
-    '学习笔记': False,
-    '其它': False,
+    'Python': '技术教程',
+    'Django': '技术教程',
+    'Java': '技术教程',
+    'Git': '技术教程',
+    'Ngrok': '技术教程',
+    '其它教程': '技术教程',
+
+    '生活笔记': '笔记专区',
+    '学习笔记': '笔记专区',
+    '其它笔记': '笔记专区',
+
+    'Python相关': '问题总结',
+    'Java相关': '问题总结',
+    'Linux相关': '问题总结',
+    'Git相关': '问题总结',
+    '其它问题': '问题总结',
 }
 
 
@@ -49,9 +58,11 @@ def home_view(request):
     # """
     article_list = models.Article.objects.order_by("-create_time")
 
-    return render(request, 'home.html', {'article_list': list(article_list),
-                                         'category_name': '主页',
-                                         })
+    return render(request, 'home.html', {
+        'article_list': list(article_list),
+        'status': 0,
+        'category_name': '主页',
+    })
 
 
 def get_article_view(request, uuid, num):
@@ -59,7 +70,7 @@ def get_article_view(request, uuid, num):
     展示文章页面视图
     :param request:
     :param uuid: 文章uuid
-    :param num: 增加文章点击量(num=1)或者好评量(num=2)
+    :param num: 增加文章点击量(num=1)或者好评量(num=250)
     :return:
     """
     if request.method == 'GET':
@@ -71,7 +82,7 @@ def get_article_view(request, uuid, num):
             if result['status']:
                 article.save()
                 print("浏览量增加成功！")
-        else:
+        elif num == 250:
             # 增加好评量
             result = article.change_praise()
             print(result)
@@ -81,8 +92,14 @@ def get_article_view(request, uuid, num):
                 print("好评量增加成功！好评量为：{0}".format(article.praise))
 
             return JsonResponse({'status': True, 'praise_num': article.praise})
+        else:
+            return HttpResponse(0)
 
-        return render(request, 'article.html', {'article': article})
+        return render(request, 'article.html', {
+            'article': article,
+            'status': 3,
+            'category_super': CATEGORY_DICT[article.category],
+        })
 
 
 def get_article_by_category_view(request, category):
@@ -95,10 +112,12 @@ def get_article_by_category_view(request, category):
     if request.method == 'GET':
         article_list = models.Article.objects.filter(category=category).order_by(
             "-create_time")
-        return render(request, 'home.html',
-                      {'article_list': list(article_list),
-                       'category_name': category,
-                       'category_super': CATEGORY_DICT[category]})
+        return render(request, 'home.html', {
+            'article_list': list(article_list),
+            'status': 2,
+            'category_name': category,
+            'category_super': CATEGORY_DICT[category],
+        })
 
 
 def get_article_super_category_view(request, category_super):
@@ -117,10 +136,11 @@ def get_article_super_category_view(request, category_super):
         article_list = models.Article.objects.filter(category__in=category_list)\
             .order_by("-create_time")
         print(article_list)
-        return render(request, 'home.html',
-                      {'article_list': list(article_list),
-                       'category_name': category_super,
-                       'category_super': False})
+        return render(request, 'home.html', {
+            'article_list': list(article_list),
+            'status': 1,
+            'category_super': category_super,
+        })
 
 
 def upload_image_view(request):
@@ -144,7 +164,7 @@ def upload_image_view(request):
 
         data = {
             'result': 'ok',
-            'path': 'http://10.0.0.105:8000/{0}'.format(path)
+            'path': '/{0}'.format(path)
         }
 
         time.sleep(1)
@@ -280,7 +300,7 @@ def sign_up_view(request):
         result = {
             "status": True,
             "reason": "注册成功，3S后跳转到登录页面。。。",
-            "url": 'http://test.ngroktest.nodes.studio/blog/login/',
+            "url": '/blog/login/',
         }
         return render(request, 'prompt.html', {'result': result})
 

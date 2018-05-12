@@ -63,6 +63,19 @@
         .praise:hover{
             cursor: pointer;
         }
+        .box-text-share{
+            width: 250px;
+            height: 50px;
+            background: #5bc0de;
+            border: #31b0d5 1px solid;
+            border-radius: 5px;
+            font-size: 20px;
+            padding: 15px 0 0 5px;
+            color: white;
+        }
+        .share-article:hover{
+            cursor: pointer;
+        }
     </style>
     {% for article in article_list %}
         <article class="excerpt">
@@ -122,8 +135,8 @@
                         <span style="color: forestgreen">{{ article.author.name }}</span>
                     </a>
                 </span>
-                <span class="muted">
-                    <a href="#">
+                <span class="muted share-article" data-clipboard-text="http://0.0.0.0:8000/blog/article/{{ article.uuid }}/1/">
+                    <a>
                         <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
                         <span>分享</span>
                     </a>
@@ -131,8 +144,40 @@
             </p>
             <!--::after-->
         </article>
+        <div class="prompt-box-share" style="display: none">
+            <div class="box-text-share text-center"></div>
+            <div class="article-address"></div>
+        </div>
     {% endfor %}
     <script>
+        $('.share-article').click(function () {
+            share_article();
+            $('.prompt-box-share').show(200);
+            var article_url = new ClipboardJS('.share-article');
+            article_url.on('success', function(e) {
+                $('.box-text-share').text("文章地址已复制到剪切板!");
+                setTimeout(function () {
+                    $('.prompt-box-share').hide(400);
+                }, 2000);
+            }) ;
+            article_url.on('error', function(e) {
+                $('.box-text-share').text("复制失败，请重试！")
+            }) ;
+        });
+         var share_article = function() {
+             var t1 = $(window).height();
+             var t2 = $(window).width();
+             var t3 = $(document).scrollTop();
+
+             $('.prompt-box-share').css({
+                 "position": "absolute",
+                 "left": "-50px",
+                 "top": "-202px",
+                 "margin-top": t1/ 2 - 25 + t3,
+                 "margin-left": t2 / 2 - 125,
+                 "z-index": 200,
+             });
+         };
          // 格式化字符串format函数
          String.prototype.format = function(args) {
             var result = this;
@@ -165,7 +210,12 @@
             str=str.replace(/\s/g,''); //将空格去掉
             return str;
         }
-        $(document).ready(function () {
+        // 窗口大小改变时
+        $(window).resize(function () {
+            // share_article();
+        });
+        $(window).load(function () {
+            // share_article();
             $('.note').each(function () {
                 var text = $(this).text();
                 text = removeHTMLTag(text);
@@ -203,10 +253,24 @@
                     $(this).find('img').attr('src', "{% static 'images/article_category/Git.jpg' %}");
                 }else if(category_name == "Ngrok"){
                     $(this).find('img').attr('src', "{% static 'images/article_category/Ngrok.jpg' %}");
-                }else if(category_name == "其它"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/qita.jpg' %}");
+                }else if(category_name == "其它教程"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/其它教程.jpg' %}");
+                }else if(category_name == "生活笔记"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/生活笔记.jpg' %}");
                 }else if(category_name == "学习笔记"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/study.jpg' %}");
+                    $(this).find('img').attr('src', "{% static 'images/article_category/学习笔记.jpg' %}");
+                }else if(category_name == "其它笔记"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/其它笔记.jpg' %}");
+                }else if(category_name == "Python相关"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Python相关.jpg' %}");
+                }else if(category_name == "Java相关"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Java相关.jpg' %}");
+                }else if(category_name == "Linux相关"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Linux相关.jpg' %}");
+                }else if(category_name == "Git相关"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/Git相关.jpg' %}");
+                }else if(category_name == "其它问题"){
+                    $(this).find('img').attr('src', "{% static 'images/article_category/其它问题.jpg' %}");
                 }
 
 
@@ -217,7 +281,7 @@
             var uuid = $(this).attr('id');
             var praise_text = $(this).find('span:last-child')
             $.ajax({
-                url: "/blog/article/"+uuid+"/2/",
+                url: "/blog/article/"+uuid+"/250/",
                 type:"GET",
                 success:function (data) {
                     if (data.status){
@@ -225,7 +289,6 @@
                     }else{
                         alert('好评失败！');
                     }
-
                 },
                 error:function () {
                     alert('服务器出错！');

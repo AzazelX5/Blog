@@ -7,11 +7,13 @@
     <title>{% block title %}{% endblock %}</title>
     {% load static %}
     <!-- Bootstrap -->
-    <link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">
+    <!--<link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
     <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-    <script src="{% static 'js/bootstrap.min.js'%}"></script>
+    <!--<script src="{% static 'js/bootstrap.min.js'%}"></script>-->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <!-- 复制到剪切板功能插件 -->
     <script type="text/javascript" src="{% static 'js/clipboard.min.js'%}"></script>
     <style>
@@ -98,26 +100,54 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav">
-                <li class="dropdown" id="technical_talks">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">技术杂谈 <span class="caret"></span></a>
+                <li class="dropdown" id="technical_tutorial">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">技术教程 <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'category' 'Python' %}">Python</a></li>
                     <li><a href="{% url 'category' 'Java' %}">Java</a></li>
+                    <li role="separator" class="divider"></li>
                     <li><a href="{% url 'category' 'Django' %}">Django</a></li>
                     <li role="separator" class="divider"></li>
                     <li><a href="{% url 'category' 'Git' %}">Git</a></li>
-                    <li role="separator" class="divider"></li>
                     <li><a href="{% url 'category' 'Ngrok' %}">Ngrok</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'category' '其它教程' %}">其它教程</a></li>
                   </ul>
                 </li>
-                <li id="study_note"><a href="{% url 'category' '学习笔记' %}">学习笔记 <span class="sr-only">(current)</span></a></li>
-                <li id="else"><a href="{% url 'category' '其它' %}">其它</a></li>
+              </ul>
+              <ul class="nav navbar-nav">
+                <li class="dropdown" id="notes_area">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">笔记专区 <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{% url 'category' '生活笔记' %}">生活笔记</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'category' '学习笔记' %}">学习笔记</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'category' '其它笔记' %}">其它笔记</a></li>
+                  </ul>
+                </li>
+              </ul>
+              <ul class="nav navbar-nav">
+                <li class="dropdown" id="conclusion_of_issue">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">问题总结 <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{% url 'category' 'Python相关' %}">Python相关</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'category' 'Java相关' %}">Java相关</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'category' 'Linux相关' %}">Linux相关</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'category' 'Git相关' %}">Git相关</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{% url 'category' '其它问题' %}">其它问题</a></li>
+                  </ul>
+                </li>
               </ul>
               <form class="navbar-form navbar-left">
                 <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search">
+                  <input type="text" class="form-control" placeholder="Search" disabled="disabled">
                 </div>
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="submit" class="btn btn-default" disabled="disabled">Submit</button>
               </form>
               <ul class="nav navbar-nav navbar-right">
                 <li class="web-info"><a href="#">关于本站 </a></li>
@@ -127,11 +157,11 @@
                       <span id="login_status"> </span>
                       <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <li><a href="{% url 'adaptive' 'login' %}">登录</a></li>
+                    <li class="log_in"><a href="{% url 'adaptive' 'login' %}">登录</a></li>
                     <li><a href="{% url 'adaptive' 'registration' %}">注册</a></li>
-                    <li><a href="{% url 'adaptive' 'edit_article' %}">发表文章</a></li>
+                    <li class="edit_article disabled"><a>发表文章</a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a href="{% url 'log_out' %}">注销</a></li>
+                    <li class="log_out disabled"><a>注销</a></li>
                   </ul>
                 </li>
               </ul>
@@ -275,14 +305,20 @@
              $('#login_status').text("未登录！");
          }else{
              $('#login_status').text(login_status_name);
+             $('.edit_article').removeClass("disabled");
+             $('.edit_article a').attr('href', "/blog/edit_article/")
+             $('.log_out').removeClass("disabled");
+             $('.log_out a').attr('href', "/blog/log_out/")
+             $('.log_in').addClass("disabled");
+             $('.log_in a').removeAttr("href");
          }
 
-         if("{{ category_name }}" == "学习笔记"){
-             $('#study_note').addClass("active");
-         }else if("{{ category_name }}" == "其它"){
-             $('#else').addClass("active");
-         }else{
-             $('#technical_talks').addClass("active");
+         if("{{ category_super }}" == "技术教程"){
+             $('#technical_tutorial').addClass("active");
+         }else if("{{ category_super }}" == "笔记专区"){
+             $('#notes_area').addClass("active");
+         }else if("{{ category_super }}" == "问题总结"){
+             $('#conclusion_of_issue').addClass("active");
          }
      });
      // 窗口大小改变时
