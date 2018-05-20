@@ -243,47 +243,9 @@
                     "overflow": "hidden",
                 })
             });
+            // 设置文章类型图片
             $('.focus').each(function () {
-                var category_name = $(this).attr('name');
-
-                if(category_name == "Python"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Python.jpg' %}");
-                }else if(category_name == "Django"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Django.jpg' %}");
-                }else if(category_name == "Java"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Java.jpg' %}");
-                }else if(category_name == "Ansible") {
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Ansible.jpg' %}");
-                }else if(category_name == "Drone") {
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Drone.jpg' %}");
-                }else if(category_name == "Docker") {
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Docker.jpg' %}");
-                }else if(category_name == "Git"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Git.jpg' %}");
-                }else if(category_name == "Ngrok"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Ngrok.jpg' %}");
-                }else if(category_name == "其它教程"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/其它教程.jpg' %}");
-                }else if(category_name == "生活笔记"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/生活笔记.jpg' %}");
-                }else if(category_name == "学习笔记"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/学习笔记.jpg' %}");
-                }else if(category_name == "其它笔记"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/其它笔记.jpg' %}");
-                }else if(category_name == "Python相关"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Python相关.jpg' %}");
-                }else if(category_name == "Java相关"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Java相关.jpg' %}");
-                }else if(category_name == "Linux相关"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Linux相关.jpg' %}");
-                }else if(category_name == "Git相关"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/Git相关.jpg' %}");
-                }else if(category_name == "其它问题"){
-                    $(this).find('img').attr('src', "{% static 'images/article_category/其它问题.jpg' %}");
-                }
-
-
-
+                $(this).find('img').attr('src', "/static/images/article_category/{0}.jpg".format($(this).attr('name')));
             });
          });
         $('.praise').click(function () {
