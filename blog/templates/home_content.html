@@ -8,6 +8,7 @@
             margin-bottom: 10px;
             position: relative;
             clear: both;
+            border-radius: 5px;
             /*left: -15px;*/
             /*right: 15px;*/
         }
@@ -86,7 +87,7 @@
             <!-- 顶部文章标题区 -->
             <header>
                 <!-- 文章标签 -->
-                <a href="#">
+                <a href="{% url 'category' article.category %}">
                     <span class="label label-info">{{ article.category }}</span>
                 </a>
                 <h2>
