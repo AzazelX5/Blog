@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="{% static 'images/my_info/logo.ico' %}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{% static 'images/my_info/favicon.ico' %}" type="image/x-icon"/>
     <title>{% block title %}{% endblock %}</title>
 
     <!-- Bootstrap -->
@@ -159,7 +159,7 @@
                     </form>
                     <ul class="nav navbar-nav navbar-right">
                         <li id="web-plan"><a href="{% url 'plan'%}">目标 / 计划 </a></li>
-                        <li id="web-info"><a href="{% url 'about' 'str' %}">关于本站 </a></li>
+                        <li id="web-info"><a href="{% url 'adaptive' 'about' %}">关于本站 </a></li>
                         <li class="dropdown" id="auth_info">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
@@ -313,9 +313,9 @@
          }else{
              $('#login_status').text(login_status_name);
              $('.edit_article').removeClass("disabled");
-             $('.edit_article a').attr('href', "/blog/edit_article/")
+             $('.edit_article a').attr('href', "/edit_article/")
              $('.log_out').removeClass("disabled");
-             $('.log_out a').attr('href', "/blog/log_out/")
+             $('.log_out a').attr('href', "/log_out/")
              $('.log_in').addClass("disabled");
              $('.log_in a').removeAttr("href");
          }

@@ -111,20 +111,20 @@ def get_article_view(request, uuid, num):
         })
 
 
-def about_view(request, str):
-    """
-    关于本站页面
-    :param request:
-    :param str:
-    :return:
-    """
-    if request.method == 'GET':
-        plans = models.Plan.objects.all().order_by("planning_time",
-                                                   "estimated_time")
-
-        return render(request, 'about.html', {
-            'plans': list(plans),
-        })
+# def about_view(request, str):
+#     """
+#     关于本站页面
+#     :param request:
+#     :param str:
+#     :return:
+#     """
+#     if request.method == 'GET':
+#         plans = models.Plan.objects.all().order_by("planning_time",
+#                                                    "estimated_time")
+#
+#         return render(request, 'about.html', {
+#             'plans': list(plans),
+#         })
 
 
 def get_article_by_category_view(request, category):
@@ -175,7 +175,7 @@ def plan_view(request):
     :return:
     """
     if request.method == 'POST':
-        # request.session['name'] = 'Azazel'
+        request.session['name'] = 'Azazel'
         if 'name' not in request.session:
             data = {
                 'ok': False,
@@ -301,7 +301,6 @@ def save_login_code_view(request):
     """
     if request.method == 'GET':
         code = request.GET.get('code')
-        print(code)
         request.session['login_code'] = code
 
         result = {
@@ -363,7 +362,7 @@ def log_out_view(request):
         result = {
             "status": True,
             "reason": "注销成功，3S后跳转到主页。。。",
-            "url": "/blog/home/",
+            "url": "/home/",
         }
         return render(request, 'prompt.html', {'result': result})
 
@@ -398,7 +397,7 @@ def sign_up_view(request):
         result = {
             "status": True,
             "reason": "注册成功，3S后跳转到登录页面。。。",
-            "url": '/blog/login/',
+            "url": '/login/',
         }
         return render(request, 'prompt.html', {'result': result})
 

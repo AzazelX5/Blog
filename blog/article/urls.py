@@ -18,11 +18,11 @@ from . import views
 
 urlpatterns = [
     # 主页
-    path('home/', views.home_view, name='home'),
+    path('', views.home_view, name='home'),
     # 文章页面
     path('article/<uuid:uuid>/<int:num>/', views.get_article_view, name='article'),
     # 关于本站页面
-    path('about/<str:str>/', views.about_view, name='about'),
+    # path('about/<str:str>/', views.about_view, name='about'),
     # 按类型查找文章功能
     path('category/<str:category>/', views.get_article_by_category_view, name='category'),
     # 按总类型查找所有子类型文章功能

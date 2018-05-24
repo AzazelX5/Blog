@@ -139,7 +139,7 @@
                         <span style="color: forestgreen">{{ article.author.name }}</span>
                     </a>
                 </span>
-                <span class="muted share-article" data-clipboard-text="http://0.0.0.0:8000/blog/article/{{ article.uuid }}/1/">
+                <span class="muted share-article" data-clipboard-text="http://www.azlx.top/article/{{ article.uuid }}/1/">
                     <a>
                         <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
                         <span>分享</span>
@@ -253,7 +253,7 @@
             var uuid = $(this).attr('id');
             var praise_text = $(this).find('span:last-child')
             $.ajax({
-                url: "/blog/article/"+uuid+"/250/",
+                url: "/article/"+uuid+"/250/",
                 type:"GET",
                 success:function (data) {
                     if (data.status){

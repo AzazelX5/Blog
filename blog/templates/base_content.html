@@ -53,23 +53,23 @@
     $(window).load(function () {
         if("{{ status }}" == 1){
             $('#category-02').show();
-            $('#category-02 a').attr("href", "/blog/category_super/{{ category_super }}/");
+            $('#category-02 a').attr("href", "/category_super/{{ category_super }}/");
             $('#category-02 a').text("{{ category_super }}");
         }else if("{{ status }}" == 2) {
             $('#category-02').show();
-            $('#category-02 a').attr("href", "/blog/category_super/{{ category_super }}/");
+            $('#category-02 a').attr("href", "/category_super/{{ category_super }}/");
             $('#category-02 a').text("{{ category_super }}");
 
             $('#category-03').show();
-            $('#category-03 a').attr("href", "/blog/category/{{ category_name }}/");
+            $('#category-03 a').attr("href", "/category/{{ category_name }}/");
             $('#category-03 a').text("{{ category_name }}");
         }else if("{{ status }}" == 3) {
             $('#category-02').show();
-            $('#category-02 a').attr("href", "/blog/category_super/{{ category_super }}/");
+            $('#category-02 a').attr("href", "/category_super/{{ category_super }}/");
             $('#category-02 a').text("{{ category_super }}");
 
             $('#category-03').show();
-            $('#category-03 a').attr("href", "/blog/category/{{ article.category }}/");
+            $('#category-03 a').attr("href", "/category/{{ article.category }}/");
             $('#category-03 a').text("{{ article.category }}");
 
             $('#category-04').show();

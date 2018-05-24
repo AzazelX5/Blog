@@ -247,7 +247,7 @@
                 success:function (data) {
                     if (data["result"] == 'ok'){
                         alert("上传成功！");
-                        window.location.href = "/blog/article/{0}/{1}/".format(data.uuid, 1);
+                        window.location.href = "/article/{0}/{1}/".format(data.uuid, 1);
                     }else{
                         alert('上传失败！');
                     }
