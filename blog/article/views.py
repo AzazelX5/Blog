@@ -5,6 +5,7 @@ import uuid
 import time
 
 from random import Random
+from datetime import date, timedelta
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -49,8 +50,13 @@ def adaptive_view(request, url):
     """
     if request.method == 'GET':
         url_str = '{0}.html'
-        print(url)
-        return render(request, url_str.format(url))
+        if url in ['login', 'registration', 'edit_article']:
+            category_super = 'auth_info'
+        else:
+            category_super = None
+
+        return render(request, url_str.format(url),
+                      {'category_super': category_super})
 
 
 def home_view(request):
@@ -105,6 +111,22 @@ def get_article_view(request, uuid, num):
         })
 
 
+def about_view(request, str):
+    """
+    关于本站页面
+    :param request:
+    :param str:
+    :return:
+    """
+    if request.method == 'GET':
+        plans = models.Plan.objects.all().order_by("planning_time",
+                                                   "estimated_time")
+
+        return render(request, 'about.html', {
+            'plans': list(plans),
+        })
+
+
 def get_article_by_category_view(request, category):
     """
     按类别查询
@@ -143,6 +165,79 @@ def get_article_super_category_view(request, category_super):
             'article_list': list(article_list),
             'status': 1,
             'category_super': category_super,
+        })
+
+
+def plan_view(request):
+    """
+    计划视图
+    :param request:
+    :return:
+    """
+    if request.method == 'POST':
+        # request.session['name'] = 'Azazel'
+        if 'name' not in request.session:
+            data = {
+                'ok': False,
+                'msg': '请登录管理员账号后再操作！'
+            }
+        elif request.session['name'] == 'Azazel':
+            plan_dict = json.loads(request.body)
+            req_type = plan_dict['type']
+            del plan_dict['type']
+
+            if req_type == 'add':
+                # 添加计划
+                models.Plan.objects.create(**plan_dict)
+            elif req_type == 'give_up':
+                # 放弃计划
+                plan = models.Plan.objects.get(uuid=plan_dict['uuid'])
+                plan.give_up_plan()
+                plan.save()
+            elif req_type == 'reason':
+                # 说明逾期计划原因
+                plan = models.Plan.objects.get(uuid=plan_dict['uuid'])
+                plan.reason = plan_dict['reason']
+                plan.save()
+            elif req_type == 'finish':
+                # 完成计划
+                plan = models.Plan.objects.get(uuid=plan_dict['uuid'])
+                plan.finish_plan()
+                plan.save()
+            elif req_type == 'restart':
+                # 重启逾期计划
+                old_plan = models.Plan.objects.get(uuid=plan_dict['uuid'])
+                old_plan.reason = old_plan.reason[:-3] + '已重启'
+                old_plan.save()
+                plan = {
+                    'name': old_plan.name,
+                    'content': old_plan.content,
+                    'estimated_time': date.today() + timedelta(days=15),
+                    'reason': '逾期重启计划',
+                }
+                models.Plan.objects.create(**plan)
+            elif req_type == 'change':
+                # 更改计划紧急程度
+                plan = models.Plan.objects.get(uuid=plan_dict['uuid'])
+                plan.emergency_level = plan_dict['emergency_level']
+                plan.save()
+
+            data = {
+                'ok': True,
+                'msg': '',
+            }
+        else:
+            data = {
+                'ok': False,
+                'msg': '您不是管理员，无权操作！',
+            }
+        return JsonResponse(data)
+    elif request.method == 'GET':
+        plans = models.Plan.objects.all().order_by("planning_time",
+                                                   "estimated_time")
+
+        return render(request, 'plan.html', {
+            'plans': list(plans),
         })
 
 
@@ -364,7 +459,7 @@ def send_email_code_view(request):
         email_address = json.loads(request.body)['email']
 
         # 6位验证码
-        r_str = random_str(6)
+        r_str = _random_str(6)
         # 将验证码存入session
         request.session['sign_up_code'] = r_str
         # 设置过期时间为5分钟
@@ -396,7 +491,7 @@ def send_email_code_view(request):
         return JsonResponse(data)
 
 
-def random_str(random_length=8):
+def _random_str(random_length=8):
     """
     生成指定位数的随机数
     :param random_length: 需要生成随机数的长度

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}关于本站{% endblock %}
+
+{% block content %}
+    <style>
+        ._padding_style{
+            padding: 0 15px;
+        }
+        .about-content{
+            margin-top: 10px;
+        }
+    </style>
+    <div class="btn-group btn-group-justified _padding_style" role="group" aria-label="...">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary">本站说明</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-info">关于作者</button>
+        </div>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-success">计划 / 目标</button>
+        </div>
+         <div class="btn-group" role="group">
+            <button type="button" class="btn btn-danger">服务条款</button>
+        </div>
+    </div>
+    <div class="about-content _padding_style">
+        {% include 'about_content.html' %}
+    </div>
+{% endblock %}

@@ -21,10 +21,14 @@ urlpatterns = [
     path('home/', views.home_view, name='home'),
     # 文章页面
     path('article/<uuid:uuid>/<int:num>/', views.get_article_view, name='article'),
+    # 关于本站页面
+    path('about/<str:str>/', views.about_view, name='about'),
     # 按类型查找文章功能
     path('category/<str:category>/', views.get_article_by_category_view, name='category'),
     # 按总类型查找所有子类型文章功能
     path('category_super/<str:category_super>/', views.get_article_super_category_view, name='category_super'),
+    # 保存计划
+    path('plan/', views.plan_view, name='plan'),
     # 保存文章
     path('save_article/', views.save_article_view, name='save_article'),
     # 登录时接收客户端验证码功能
@@ -41,6 +45,6 @@ urlpatterns = [
     path('send_email/', views.send_email_code_view, name='send_email'),
     # 上传图片
     path('upload_image/', views.upload_image_view, name='upload_image'),
-    # 适配简单页面，如访问welcome、login、registration等不需要传递参数及不需要返回值的页面
+    # 适配简单页面，如访问welcome、login、registration等页面
     path('<str:url>/', views.adaptive_view, name='adaptive'),
 ]

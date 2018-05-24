@@ -18,6 +18,8 @@
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <!-- 复制到剪切板功能插件 -->
     <script type="text/javascript" src="{% static 'js/clipboard.min.js'%}"></script>
+    <!-- 日期选择插件 -->
+    <script type="text/javascript" src="{% static 'laydate/laydate.js'%}"></script>
     <style>
         *{
             margin: 0;
@@ -156,8 +158,9 @@
                         <button type="submit" class="btn btn-default" disabled="disabled">Submit</button>
                     </form>
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="web-info"><a href="#">关于本站 </a></li>
-                        <li class="dropdown">
+                        <li id="web-plan"><a href="{% url 'plan'%}">目标 / 计划 </a></li>
+                        <li id="web-info"><a href="{% url 'about' 'str' %}">关于本站 </a></li>
+                        <li class="dropdown" id="auth_info">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                             <span id="login_status"> </span>
@@ -323,6 +326,10 @@
              $('#notes_area').addClass("active");
          }else if("{{ category_super }}" == "问题总结"){
              $('#conclusion_of_issue').addClass("active");
+         }else if("{{ category_super }}" == "about"){
+             $('#web-info').addClass("active");
+         }else if("{{ category_super }}" == "auth_info"){
+             $('#auth_info').addClass("active");
          }
      });
      // 窗口大小改变时

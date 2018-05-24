@@ -1,0 +1,604 @@
+<style>
+    #add_plan:hover{
+        cursor: pointer;
+    }
+    .box-super-plan{
+        display: none;
+    }
+    .box-plan{
+        max-width: 650px;
+        border: #5bc0de 1px solid;
+        background: #d9edf7;
+        padding-top: 20px;
+        border-radius: 5px;
+
+    }
+    ._input_style{
+        margin-bottom: 10px;
+    }
+    .plan-details{
+        margin-right: -16px;
+        padding-top: 6px;
+        height: 32px;
+        font-size: 14px;
+        color: #555;
+        text-align: center;
+        background-color: #eee;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    #plan_content{
+        width: 103%;
+        height: 200px;
+        margin-left: -15px;
+    }
+</style>
+<!-- 目标 -->
+<div class="panel panel-info">
+    <div class="panel-heading" style="color: #5bc0de; font-weight: bold; font-size: 16px">目标</div>
+    <div class="panel-body">
+        <p>
+            <strong>目标：在功能体验良好，更符合逻辑的设计上做到尽量简约。</strong>
+        </p>
+    </div>
+</div>
+<!-- 计划 -->
+<div class="panel panel-info" style="margin: -10px 0 10px 0;">
+    <!-- Default panel contents -->
+    <div class="panel-heading" style="color: #5bc0de; font-weight: bold; font-size: 16px">
+        计划列表
+        <span id="add_plan" class="glyphicon glyphicon-plus" aria-hidden="true" style="float: right;"></span>
+    </div>
+    <div class="panel-body">
+        <p>此列表展示了博客从计划开始写以来所有需要完成以及之后需要完成的任务，记录着自从搭建博客以来的点点滴滴，也记录着其中遇到的所有困难和解决办法；这是一个博客成长的故事！</p>
+        <p>人生的成长亦是如此，有已经完成的任务、有未完成的任务、有计划完成的任务、也有放弃的任务。不妨你也把它记录下来，记录你的成长过程、记录你成长的故事！</p>
+        <p>鸡汤灌输完毕( 手动滑稽 [加计划，实现网页中插入表情] )</p>
+    </div>
+    <!-- Table -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class="text-center">名称</th>
+            <th class="text-center">制定计划时间</th>
+            <th class="text-center">预期完成时间</th>
+            <th class="text-center">实际完成时间</th>
+            <th class="text-center">状态</th>
+            <th class="text-center">紧急程度</th>
+            <th class="text-center">说明</th>
+            <th class="text-center" style="width: 128px">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for plan in plans %}
+                <tr id="{{ plan.uuid }}" class="plan_list">
+                    <th scope="row" style="padding-top: 15px">{{ forloop.counter }}</th>
+                    <th style="padding-top: 15px">{{ plan.name }}</th>
+                    <th style="padding-top: 15px">{{ plan.planning_time | date:'Y-m-d' }}</th>
+                    <th style="padding-top: 15px">{{ plan.estimated_time | date:'Y-m-d' }}</th>
+                    <th style="padding-top: 15px">{{ plan.complete_time | default_if_none:"" | date:'Y-m-d' }}</th>
+                    <th style="padding-top: 15px" value="{{ plan.status }}">{{ plan.get_status_display }}</th>
+                    <th style="padding-top: 15px" value="{{ plan.emergency_level }}">
+                        <span class="label plan_span">{{ plan.get_emergency_level_display }}</span>
+                    </th>
+                    <th style="padding-top: 15px">{{ plan.reason | default_if_none:"" }}</th>
+                    <th style="width: 128px">
+                        <button type="button" class="btn btn-info" onclick="view_plan(
+                            '{{ plan.uuid }}', '{{ plan.name }}', '{{ plan.get_status_display }}', '{{ plan.get_emergency_level_display }}', '{{ plan.planning_time }}', '{{ plan.estimated_time }}', '{{ plan.complete_time}}', '{{ plan.reason}}','{{ plan.content }}'
+                            )">查看</button>
+                        <button type="button" class="btn btn-info plan_btn" style="display: none;" onclick="finsh_restart_plan(this.name, '{{ plan.uuid }}')"></button>
+                    </th>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- 新增、查看、修改计划盒子模板 -->
+<div class="box-super-plan">
+    <div class="box-plan">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 text-center _input_style">
+                    <p class="plan_title" style="font-size: 20px;"></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- 计划名称 -->
+                    <div class="input-group _input_style">
+                        <span class="input-group-addon">计划名称：</span>
+                        <input type="text" class="form-control" id="plan_name">
+                    </div>
+                    <!-- 计划状态 -->
+                    <div class="input-group _input_style">
+                        <span class="input-group-addon">计划状态：</span>
+                        <input type="text" class="form-control" id="plan_status">
+                    </div>
+                    <!-- 原因说明 -->
+                    <div class="input-group _input_style">
+                        <span class="input-group-addon">原因说明：</span>
+                        <input type="text" class="form-control" id="plan_reason">
+                    </div>
+                    <!-- 计划紧急程度 -->
+                    <div class="input-group _input_style">
+                        <span class="input-group-addon">紧急程度：</span>
+                        <select id="plan_emergency" class="form-control">
+                            <option>正常处理</option>
+                            <option>有空再做</option>
+                            <option>优先处理</option>
+                            <option>十万火急</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- 制定计划时间 -->
+                    <div class="input-group _input_style">
+                        <span class="input-group-addon">制定计划时间：</span>
+                        <input type="text" class="form-control" id="date-planning">
+                    </div>
+                    <!-- 预期完成时间 -->
+                    <div class="input-group _input_style">
+                        <span class="input-group-addon">预期完成时间：</span>
+                        <input type="text" class="form-control" id="date-estimated">
+                    </div>
+                    <!-- 实际完成时间 -->
+                    <div class="input-group _input_style">
+                        <span class="input-group-addon">实际完成时间：</span>
+                        <input type="text" class="form-control" id="date-complete">
+                    </div>
+                    <!-- 更改紧急程度按钮 -->
+                    <div>
+                        <button type="button" id="change_btn" class="btn btn-info">更 改</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 10px">
+                <!-- 计划详情 -->
+                <div class="col-md-2">
+                    <div class="plan-details">
+                        <span>计划详情：</span>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <textarea id="plan_content" class="edit-result-box" style="resize:none"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="button" id="close_plan_btn" class="btn btn-info" style="width: 80px; float: right; margin: 15px 0;">关 闭</button>
+                    <button type="button" id="operate_plan_btn" class="btn btn-info" style="width: 80px; float: right; margin: 15px 10px; display: none" disabled="disabled"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // 全局定时任务变量
+    var date_corn;
+    // 判断是否为管理员操作
+    var admin =function(){
+        if("{{ request.session.name }}" == "" || "{{ request.session.name }}" != "Azazel"){
+            // $('#plan_name').attr('disabled', true);
+            // $('#plan_emergency').attr('disabled', true);
+            // $('#plan_content').attr('disabled', true);
+            // $('#date-estimated').attr('disabled', true);
+            // clearInterval(date_corn);
+            //
+            // $('#plan_reason').attr('disabled', true);
+            // $('#operate_plan_btn').attr('disabled', true);
+            // $('.plan_btn').attr('disabled', true);
+        }
+    };
+    $(window).load(function () {
+        // 日期选择
+        laydate.render({
+            elem: '#date-planning'
+            ,theme: '#5bc0de'
+        });
+        laydate.render({
+            elem: '#date-estimated'
+            ,theme: '#5bc0de'
+        });
+        laydate.render({
+            elem: '#date-complete'
+            ,theme: '#5bc0de'
+        });
+        //  计划列表
+        $('.plan_list').each(function () {
+            $(this).find('th:not(:first-child, :last-child)').addClass("text-center");
+            // 状态
+            var status = $(this).find('th').eq(-4).attr("value");
+            if(status == -1){
+                $(this).css({
+                    "background": "#d9edf7",
+                    "color": "#31708f",
+                });
+                $(this).find('.plan_btn').show();
+                $(this).find('.plan_btn').text('完成');
+                $(this).find('.plan_btn').attr('name', '完成');
+            }else if(status == 0){
+                $(this).css({
+                    "background": "#f2dede",
+                    "color": "#a94442",
+                });
+                var reason = $(this).find('th').eq(-2).text();
+
+                if(reason){
+                    if (reason.substring(reason.length-3) == '未重启'){
+                        $(this).find('.plan_btn').show();
+                        $(this).find('.plan_btn').text('重启');
+                        $(this).find('.plan_btn').attr('name', '重启');
+                    }
+                }else{
+                    $(this).find('th').eq(-2).text("< 已逾期 | 说明原因 >");
+                }
+            }else if(status == 1){
+                $(this).css({
+                    "background": "#dff0d8",
+                    "color": "#3c763d",
+                });
+            }else if(status == 2){
+                $(this).css({
+                    "background": "rgba(143, 143, 143, 0.5)",
+
+                });
+                $(this).find('th:not(:last-child)').css({
+                    "font-style": "italic",
+                    "text-decoration": "line-through",
+                    "opacity": 0.5,
+                });
+
+            }
+            // 紧急程度
+            var emergency = $(this).find('th').eq(-3).attr("value");
+            $(this).find('th').eq(-3).css({
+                "padding-top":"8px",
+                "opacity": 1,
+                "font-style": "inherit",
+                "text-decoration": "none",
+                "font-size": "20px",
+            });
+
+            if(emergency == 0){
+                $(this).find('span').addClass("label-primary");
+            }else if(emergency == 1){
+                $(this).find('span').addClass("label-success");
+            }else if(emergency == 2){
+                $(this).find('span').addClass("label-warning");
+            }else{
+                $(this).find('span').addClass("label-danger");
+            }
+        });
+
+        admin();
+    });
+    // 显示计划盒子
+    var show_box_plan = function(){
+        var t1 = $(window).height();
+        var t2 = $(window).width();
+        var t3 = $(document).scrollTop();
+        $('.box-super-plan').css({
+            "position": "absolute",
+            "height": t1 + t3 + 500,
+            "width": t2 + 65,
+            "left": "-65px",
+            "top": "-155px",
+            "background-color": "rgba(192, 192, 192 , 0.6)",
+            "padding-top": (t1-512) / 2 + t3 + 150,
+            "padding-left": (t2-650) / 2 + 65,
+            "z-index": 100,
+            "display": "inline",
+        });
+        $('body').css("overflow-y", "hidden");
+    };
+    // 添加计划
+    $('#add_plan').click(function () {
+        show_box_plan();
+        $('.plan_title').text('添 加 计 划');
+        $('#operate_plan_btn').show();
+        $('#operate_plan_btn').text('添 加');
+        // 初始化
+        $('.plan_title').removeAttr('id');
+        $('#plan_name').val('');
+        $('#plan_name').attr('disabled', false);
+
+        $('#plan_status').val('进行中');
+        $('#plan_status').attr('disabled', true);
+
+        $('#plan_reason').val('');
+        $('#plan_reason').attr('disabled', true);
+
+        $('#plan_emergency').val('正常处理');
+        $('#plan_emergency').attr('disabled', false);
+        $('#change_btn').attr('disabled', true);
+
+        var date = new Date();
+        $('#date-planning').val(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate());
+        $('#date-planning').attr('disabled', true);
+
+        $('#date-estimated').val('');
+        $('#date-estimated').attr('disabled', false);
+
+        $('#date-complete').val('');
+        $('#date-complete').attr('disabled', true);
+
+        $('#plan_content').val('');
+        $('#plan_content').attr('disabled', false);
+
+        date_corn = setInterval(function(){
+            // 判断时间不为空
+            if($('#date-estimated').val().length != 0){
+                var today = $('#date-planning').val().replace("-", "/").replace("-", "/");
+                var new_date = $('#date-estimated').val().replace("-", "/").replace("-", "/");
+                if(new_date >= today){
+                    if($('#plan_name').val().length != 0 && $('#plan_content').val().length != 0){
+                        $('#operate_plan_btn').attr('disabled', false);
+                    }else {
+                        $('#operate_plan_btn').attr('disabled', true);
+                    }
+                }else {
+                    $('#date-estimated').val('');
+                    alert('预期完成时间不能小于当日！');
+                }
+            }
+
+        },500);
+        admin();
+    });
+    // 关闭计划盒子
+    $('#close_plan_btn').click(function () {
+        $('.box-super-plan').hide();
+        $('body').css("overflow-y", "auto");
+        $('#operate_plan_btn').attr('disabled', true);
+
+        clearInterval(date_corn);
+    });
+    // 查看计划
+    var view_plan = function (id, name, status, emergency, planning_time, estimated_time, complete_time, reason, content) {
+        show_box_plan();
+        $('.plan_title').text('查 看 计 划');
+
+        $('.plan_title').attr("id", id);
+        // 计划名称
+        $('#plan_name').val(name);
+        $('#plan_name').attr('disabled', true);
+        // 计划状态
+        $('#plan_status').val(status);
+        $('#plan_status').attr('disabled', true);
+        // 原因说明
+        if (reason != "None") {
+            $('#plan_reason').val(reason);
+            $('#plan_reason').attr('disabled', true);
+        } else {
+            $('#plan_reason').val('');
+            $('#plan_reason').attr('disabled', true);
+        }
+        // 紧急程度
+        $('#plan_emergency').val(emergency);
+        if(status == "进行中" || (status == "逾期" && reason == "测试逾期 | 未重启") ){
+            $('#plan_emergency').attr('disabled', false);
+            $('#change_btn').attr('disabled', true);
+        }else{
+            $('#plan_emergency').attr('disabled', true);
+            $('#change_btn').attr('disabled', true);
+        }
+
+        // 制定计划时间
+        $('#date-planning').val(planning_time.replace(/[年]|[月]|[日]/g, "-").substring(0, planning_time.length - 1));
+        $('#date-planning').attr('disabled', true);
+        // 预计完成时间
+        $('#date-estimated').val(estimated_time.replace(/[年]|[月]|[日]/g, "-").substring(0, estimated_time.length - 1));
+        $('#date-estimated').attr('disabled', true);
+        // 实际完成时间
+        if (complete_time != "None") {
+            $('#date-complete').val(complete_time.replace(/[年]|[月]|[日]/g, "-").substring(0, complete_time.length - 1));
+            $('#date-complete').attr('disabled', true);
+        } else {
+            $('#date-complete').val('');
+            $('#date-complete').attr('disabled', true);
+        }
+        // 计划详细描述
+        $('#plan_content').val(content);
+        $('#plan_content').attr('disabled', true);
+
+        if (status == "进行中") {
+            $('#operate_plan_btn').show();
+            $('#operate_plan_btn').attr('disabled', false);
+            $('#operate_plan_btn').text('放 弃');
+        }else if (status == "逾期" && reason == "None") {
+            $('#plan_reason').attr('disabled', false);
+            $('#operate_plan_btn').show();
+            $('#operate_plan_btn').text('提 交');
+        }else if (status == "逾期" && reason == "测试逾期 | 未重启") {
+            $('#plan_reason').attr('disabled', true);
+            $('#operate_plan_btn').show();
+            $('#operate_plan_btn').attr('disabled', false);
+            $('#operate_plan_btn').text('放 弃');
+        }else {
+            $('#operate_plan_btn').hide();
+            $('#operate_plan_btn').attr('disabled', true);
+        }
+
+        admin();
+    };
+    // 监控原因说明框
+    $('#plan_reason').on('change click input', function () {
+        if ($('#plan_reason').val().length != 0) {
+            $('#operate_plan_btn').attr('disabled', false);
+        } else {
+            $('#operate_plan_btn').attr('disabled', true);
+        }
+    });
+    // 监控紧急情况框
+    $('#plan_emergency').on('change', function () {
+        if($('.plan_title').attr('id')){
+            $('#change_btn').attr('disabled', false);
+        }
+    });
+    // 添加、放弃计划及说明预期原因
+    $('#operate_plan_btn').click(function () {
+        if($(this).text() == '添 加'){
+            var num;
+            if($('#plan_emergency').val() == "十万火急"){
+                num = 3;
+            }else if($('#plan_emergency').val() == "优先处理"){
+                num = 2;
+            }else if($('#plan_emergency').val() == "正常处理"){
+                num = 1;
+            }else{
+                num=0
+            }
+            var data = {
+                type: 'add',
+                name: $('#plan_name').val(),
+                content: $('#plan_content').val(),
+                emergency_level: num,
+                estimated_time: $('#date-estimated').val(),
+            };
+            $.ajax({
+                url:"{% url 'plan' %}",
+                type:"POST",
+                data:JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success:function (data) {
+                    if (data["ok"]){
+                        alert("上传成功！");
+                    }else{
+                        alert(data.msg);
+                    }
+
+                    window.location.reload();
+                },
+                error:function () {
+                    alert('服务器出错！');
+                }
+
+            })
+        }else if($(this).text() == '放 弃'){
+            var data = {
+                type: 'give_up',
+                uuid: $('.plan_title').attr('id'),
+            };
+            $.ajax({
+                url:"{% url 'plan' %}",
+                type:"POST",
+                data:JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success:function (data) {
+                    if (data["ok"]){
+                        alert("放弃计划成功！");
+                    }else{
+                        alert(data.msg);
+                    }
+
+                    window.location.reload();
+                },
+                error:function () {
+                    alert('服务器出错！');
+                }
+
+            })
+        }else if($(this).text() == '提 交'){
+            var data = {
+                type: 'reason',
+                uuid: $('.plan_title').attr('id'),
+                reason: $('#plan_reason').val() + " | 未重启",
+            };
+            $.ajax({
+                url:"{% url 'plan' %}",
+                type:"POST",
+                data:JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success:function (data) {
+                    if (data["ok"]){
+                        alert("提交逾期说明成功！");
+                    }else{
+                        alert(data.msg);
+                    }
+
+                    window.location.reload();
+                },
+                error:function () {
+                    alert('服务器出错！');
+                }
+
+            })
+        }
+    });
+    // 完成、重启计划
+    var finsh_restart_plan = function (name, uuid) {
+        var type;
+        if(name == '完成'){
+            type = 'finish'
+        }else{
+            type = 'restart'
+        }
+        var data = {
+            type: type,
+            uuid: uuid,
+        };
+        $.ajax({
+            url:"{% url 'plan' %}",
+            type:"POST",
+            data:JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success:function (data) {
+                if (data["ok"]){
+                    alert(name + "计划成功！");
+                }else{
+                    alert(data.msg);
+                }
+
+                window.location.reload();
+            },
+            error:function () {
+                alert('服务器出错！');
+            }
+        })
+    };
+    // 更改紧急程度
+    $('#change_btn').click(function () {
+        var num;
+        if($('#plan_emergency').val() == "十万火急"){
+            num = 3;
+        }else if($('#plan_emergency').val() == "优先处理"){
+            num = 2;
+        }else if($('#plan_emergency').val() == "正常处理"){
+            num = 1;
+        }else{
+            num=0
+        }
+        var data = {
+            type: 'change',
+            uuid: $('.plan_title').attr('id'),
+            emergency_level: num,
+        };
+        $.ajax({
+            url:"{% url 'plan' %}",
+            type:"POST",
+            data:JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success:function (data) {
+                if (data["ok"]){
+                    alert("更改紧急程度成功！");
+                }else{
+                    alert(data.msg);
+                }
+
+                window.location.reload();
+            },
+            error:function () {
+                alert('服务器出错！');
+            }
+        })
+
+    });
+</script>
