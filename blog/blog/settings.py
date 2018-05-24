@@ -39,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',                        # 解决跨域
     'article',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',       # 解决跨域
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -79,8 +81,12 @@ WSGI_APPLICATION = 'blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'blog',
+        'USER': 'blog_admin',
+        'PASSWORD': 'blog-v587',
+        'HOST': '0.0.0.0',
+        'PORT': '5432',
     }
 }
 
@@ -135,3 +141,36 @@ EMAIL_HOST_PASSWORD = 'azazel163zhao'            # 我的邮箱密码
 EMAIL_SUBJECT_PREFIX = '[Azazel`s Blog]'         # 为邮件Subject-line前缀,默认是'[django]'
 EMAIL_USE_TLS = True                             # 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
 DEFAULT_FROM_EMAIL= EMAIL_HOST_USER
+
+
+# ----------------跨域增加忽略-----------------
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    '*'
+)
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
+
+CORS_ALLOW_HEADERS = (
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Pragma',
+)
+# ---------------------------------------------
