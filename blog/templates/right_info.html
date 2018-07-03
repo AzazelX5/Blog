@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style: none;
+        }
+        ._default-box-style{
+            width: 100%;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #ffffff;
+            margin-bottom: 10px;
+        }
+        .auth-box{
+            position: relative;
+            height: 80px;
+        }
+        .prompt-box{
+            position: absolute;
+            left: 13px;
+            top: -25px;
+            z-index: 2;
+            display: none;
+        }
+        .auth-info{
+            position: absolute;
+            /*left: o;*/
+            height: 70px;
+        }
+        .WeChat, .Tim, .Email, .GitHub, .Coding{
+            float: left;
+            opacity: 0.8;
+        }
+        ._auth-info-mr{
+            margin-right: 25px;
+        }
+        .hot-topics{
+            clear: both;
+            height: 320px;
+        }
+        .hot-topics span{
+            font-size: 18px;
+        }
+        hr{
+            background-color: cyan;
+            height: 1px;
+            border: none;
+            margin-top: 5px;
+        }
+        .auth-info img{
+            max-width: 50px;
+            max-height: 50px;
+        }
+        .show-info{
+            display: none;
+        }
+        .show-info img{
+            width: auto;
+            max-height: 400px;
+        }
+        .box-text{
+            width: 65px;
+            height: 25px;
+            /*border: deeppink 1px solid;*/
+            background: deepskyblue;
+            color: white;
+            padding-top: 3px;
+            border-radius: 5px;
+        }
+        .box-arrow{
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid deepskyblue;
+            width: 0;
+            height: 0;
+            margin-left: 25px;
+        }
+
+    </style>
+</head>
+<body>
+    {% load static %}
+    <div class="auth-box">
+        <div class="prompt-box">
+            <div class="box-text text-center">WeChat</div>
+            <div class="box-arrow"></div>
+        </div>
+        <div class="auth-info _default-box-style">
+            <ul>
+                <li>
+                    <button class="btn WeChat _auth-info-mr"  style="border: 0; padding: 0; outline: none;" name="WeChat">
+                        <img src="{% static 'images/weixin.png'%}">
+                    </button>
+                </li>
+                <li>
+                    <button class="btn Tim _auth-info-mr"  style="border: 0; padding: 0; outline: none;" name="Tim">
+                        <img src="{% static 'images/tim.png'%}">
+                    </button>
+                </li>
+                <li>
+                    <button class="btn Email _auth-info-mr"  style="border: 0; padding: 0; outline: none;" data-clipboard-target="#copy-text" name="Email">
+                        <img src="{% static 'images/email.png'%}">
+                    </button>
+                </li>
+                <li>
+                    <button class="btn GitHub _auth-info-mr"  style="border: 0; padding: 0; outline: none;" name="GitHub">
+                        <a href="https://github.com/AzazelX5/" target="_blank"><img src="{% static 'images/github.png'%}"></a>
+                    </button>
+                </li>
+                <li>
+                    <button class="btn Coding"  style="border: 0; padding: 0; outline: none;" name="Coding">
+                        <a href="https://coding.net/u/Azazel/" target="_blank"><img src="{% static 'images/coding.png'%}"></a>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="show-info _default-box-style text-center">
+        <img class="center-block" src="" alt="二维码" style="display: none">
+        <div class="show-info-text" style="display: none">
+            <div id="copy-text" style="font-size: 18px; color: deepskyblue; margin-top:5px;"><strong></strong></div>
+            <div style="font-size: 15px; color: deepskyblue; margin-top:5px;">(点击图标自动复制地址)</div>
+        </div>
+    </div>
+    <div class="hot-topics _default-box-style">
+        <span>热门专题</span> <hr>
+        {% include 'image_carousel.html' %}
+    </div>
+
+    <script>
+        // 查找元素在数组中的位置方法
+        Array.prototype.indexOf = function(val) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == val) {
+                    return i;
+                }
+            }
+            return -1;
+        };
+        // 删除数组中元素方法
+        Array.prototype.remove = function(val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
+        // 数组去重方法
+        Array.prototype.distinct = function (){
+            var arr = this,
+            i,
+            obj = {},
+            result = [];
+            for(i = 0; i< arr.length; i++){
+                if(!obj[arr[i]]){ //如果能查找到，证明数组元素重复了
+                    obj[arr[i]] = 1;
+                    result.push(arr[i]);
+                }
+            }
+            return result;
+        };
+
+        // 用来控制展示作者信息的动画效果
+        var wtegc_list = ['.WeChat', '.Tim', '.Email', '.GitHub', '.Coding'];
+        var set_disabled = function(name, status,){
+            wtegc_list = wtegc_list.distinct();
+            if(status){
+                 wtegc_list.remove(name);
+            }else{
+                wtegc_list.push(name);
+            }
+            wtegc_list = wtegc_list.distinct();
+            for(i = 0; i <= wtegc_list.length-1; i++ ){
+                $(wtegc_list[i]).attr('disabled', status);
+            }
+        };
+        // 展示作者信息栏鼠标滑过效果
+        var name;
+        $('.WeChat, .Tim, .Email, .GitHub, .Coding').hover(function () {
+            $(this).css("opacity", "1.5");
+            // WeChat
+            if($(this).attr("name") == "WeChat"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
+                $('.show-info img').show();
+                $('.show-info-text').show();
+
+                $('.prompt-box .box-text').text($(this).attr("name"));
+                $('.prompt-box').css("left", 13);
+                $('.prompt-box').show(300);
+
+                $('.show-info img').attr("src", "{% static 'images/my_info/QR_code_WChat.png'%}");
+
+                $('.show-info').show(300);
+
+                return;
+            }
+            // Tim
+            if($(this).attr("name") == "Tim"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
+                $('.show-info img').show();
+                $('.show-info-text').show();
+
+                $('.prompt-box .box-text').text($(this).attr("name"));
+                $('.prompt-box').css("left", 88);
+                $('.prompt-box').show(300);
+
+                $('.show-info img').attr("src", "{% static 'images/my_info/QR_code_Tim.png'%}");
+
+
+                $('.show-info').show(300);
+
+                return;
+            }
+            // Email
+            if($(this).attr("name") == "Email"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
+                $('.show-info-text').show();
+
+                $('.prompt-box .box-text').text($(this).attr("name"));
+                $('.prompt-box').css("left", 163);
+                $('.prompt-box').show(300);
+
+                $('#copy-text').text("azazel.zhao@live.cn");
+                $('.show-info-text div:last-child').text("(点击图标自动复制地址)");
+
+                $('.show-info').show(300);
+
+                return;
+            }
+            // GitHub
+            if($(this).attr("name") == "GitHub"){
+               name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
+                $('.prompt-box .box-text').text($(this).attr("name"));
+                $('.prompt-box').css("left", 238);
+                $('.prompt-box').show(300);
+
+                return;
+            }
+            // Coding
+            if($(this).attr("name") == "Coding"){
+                name = "." + $(this).attr("name");
+                set_disabled(name, true);
+
+                $('.prompt-box .box-text').text($(this).attr("name"));
+                $('.prompt-box').css("left", 313);
+                $('.prompt-box').show(300);
+
+                return;
+            }
+        },
+        function () {
+            $(this).css("opacity", "0.8");
+            $(this).attr('disabled', true);
+            $('.show-info img').hide(200);
+            $('.show-info-text').hide(200);
+            $('.show-info').hide(300);
+            $('.prompt-box').hide(300);
+            $('#copy-text').text("");
+            $('.show-info-text div:last-child').text("");
+
+            setTimeout(function () {
+                set_disabled(name, false);
+            },500);
+        });
+
+        // 点击复制邮件地址功能
+        $('.Email').click(function () {
+            var copy = new ClipboardJS('.Email');
+            copy.on('success', function(e) {
+                $('.show-info-text div:last-child').text("(复制成功！)")
+            }) ;
+            copy.on('error', function(e) {
+                $('.show-info-text div:last-child').text("(复制失败！)")
+            }) ;
+        });
+    </script>
+</body>
+</html>

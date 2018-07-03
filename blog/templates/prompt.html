@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}主页{% endblock %}
+
+{% block content %}
+    <h3>
+        {{ result.reason }}
+    </h3>
+
+    <script>
+    $(window).load(function () {
+        var url = "{{ result.url }}";
+        setTimeout(function () {
+            window.location.href = url;
+        }, 3000);
+    });
+</script>
+{% endblock %}
+

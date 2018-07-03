@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>广告</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        li {
+            list-style:none;
+        }
+        img {
+            border:none;
+        }
+        .winBox {
+            width:auto;
+            height:40px;
+            overflow:hidden;
+            position:relative;
+            background: darkgrey;
+            margin-bottom: 10px;
+        }
+        .scroll {
+            /*width的大小是根据下面li的长度和多少个li而定的，需注意！*/
+            width:1500px;
+            position:absolute;
+            left:0;
+            top:0;
+        }
+        .scroll li {
+            width:300px;
+            float:left;
+            line-height:40px;
+            text-align:center;
+        }
+        .volume{
+            width: 42px;
+            height: 40px;
+            background: darkgrey;
+            position: relative;
+            top: 40px;
+            z-index: 100;
+        }
+        .volume img{
+            width: 42px;
+            height: 40px;
+        }
+        .volume img:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="volume">
+        {% load static %}
+        <img class="volume-0" style="display: none" src="{% static 'images/volume-00.png'%}">
+        <img class="volume-1" style="display: inherit" src="{% static 'images/volume-01.png'%}">
+        <img class="volume-2" style="display: none" src="{% static 'images/volume-02.png'%}">
+        <img class="volume-3" style="display: none" src="{% static 'images/volume-03.png'%}">
+    </div>
+    <div class="winBox">
+        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+        <ul class="scroll">
+            <li><a href="#">广告位：这是第1个广告</a></li>
+            <li><a href="#">广告位：这是第2个广告</a></li>
+            <li><a href="#">广告位：这是第3个广告</a></li>
+            <li><a href="#">广告位：这是第4个广告</a></li>
+            <li><a href="#">广告位：这是第5个广告</a></li>
+            <!--给所要的内容复制一份-->
+            <li><a href="#">广告位：这是第1个广告</a></li>
+            <li><a href="#">广告位：这是第2个广告</a></li>
+            <li><a href="#">广告位：这是第3个广告</a></li>
+            <li><a href="#">广告位：这是第4个广告</a></li>
+            <li><a href="#">广告位：这是第5个广告</a></li>
+        </ul>
+    </div>
+
+    <script>
+        // 设置广告滚动条效果
+        var num = 0;
+        var timer;
+        function goLeft() {
+            if (num == -1500) {
+                num = 0;
+            }
+            num -= 1;
+            $(".scroll").css({
+                left: num
+            })
+        }
+
+        // 设置广告滚动条开始的喇叭闪烁效果
+        var volume;
+        function change_volume(){
+            if($('.volume-2').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
+                $('.volume-1').hide();
+                $('.volume-2').show();
+                $('.volume-3').hide();
+                return;
+            }
+            if($('.volume-1').css('display') == 'none' && $('.volume-3').css('display') == 'none'){
+                $('.volume-1').hide();
+                $('.volume-2').hide();
+                $('.volume-3').show();
+                return;
+            }
+            if($('.volume-1').css('display') == 'none' && $('.volume-2').css('display') == 'none'){
+                $('.volume-1').show();
+                $('.volume-2').hide();
+                $('.volume-3').hide();
+                return;
+            }
+        }
+
+        var adv_scroll = function(){
+            clearInterval(volume);
+            volume = setInterval(change_volume, 800);
+
+            clearInterval(timer);
+            $('.winBox').css("width", $('.nav-box').width());
+            $('.scroll').css("width", $('.scroll > li').length * 300);
+
+            //设置滚动速度
+            timer = setInterval(goLeft, 20);
+            //设置鼠标经过时滚动停止
+            $(".winBox").hover(
+                function() {
+                    clearInterval(timer);
+                },
+                function() {
+                    if($('.volume-0').css('display') == 'none'){
+                        clearInterval(timer);
+                        timer = setInterval(goLeft, 20);
+                    }else{
+                        clearInterval(timer);
+                    }
+                }
+            );
+        };
+
+        $('.volume-1, .volume-2, .volume-3').click(function () {
+            $('.volume-0').show();
+            $('.volume-1').hide();
+            $('.volume-2').hide();
+            $('.volume-3').hide();
+            clearInterval(volume);
+            clearInterval(timer);
+        });
+        $('.volume-0').click(function () {
+            $('.volume-0').hide();
+            $('.volume-1').show();
+            $('.volume-2').hide();
+            $('.volume-3').hide();
+            volume = setInterval(change_volume, 800);
+            timer = setInterval(goLeft, 20);
+        });
+    </script>
+
+</body>
+</html>

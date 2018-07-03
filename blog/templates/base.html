@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{% static 'images/my_info/favicon.ico' %}" type="image/x-icon"/>
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <!--<link href="{% static 'css/bootstrap.min.css'%}" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js'%}"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <!--<script src="{% static 'js/bootstrap.min.js'%}"></script>-->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- 复制到剪切板功能插件 -->
+    <script type="text/javascript" src="{% static 'js/clipboard.min.js'%}"></script>
+    <!-- 日期选择插件 -->
+    <script type="text/javascript" src="{% static 'laydate/laydate.js'%}"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            font-size: 14px;
+            line-height: 20px;
+            background-color: #eee;
+        }
+        a,a:hover,a:visited,a:active,a:focus{ text-decoration:none; color:#333}
+        .top-box{
+            width: 100%;
+            height: 100px;
+        }
+        .top-box img{
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        ._word-style{
+            font-size: 30px;
+            color: white;
+        }
+        .first-word{
+            padding-left: 42%;
+
+        }
+        .second-word{
+            padding-left: 50%;
+
+        }
+        .blog-auth{
+            float: right;
+            margin-right: 10%;
+            font-size: 20px;
+        }
+        .nav-box {
+            padding: 0 65px;
+        }
+        .middle{
+            margin: 0 50px;
+        }
+        .ad-box{
+            padding-left: 15px;
+            margin-top: -60px;
+        }
+        .foot{
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+    <!-- 顶部图片 -->
+    <div class="top-box">
+        {% load static %}
+        <img src="{% static 'images/home_top_box.jpeg'%}" height="100" width="100%">
+        <div style="width: 100%; height: 18px;"></div>
+        <span class="first-word _word-style">给梦想一个机会</span><br />
+        <div style="width: 100%; height: 18px;"></div>
+        <span class="second-word _word-style">给未来一种可能</span>
+        <span class="blog-auth">Azazel的个人博客</span>
+    </div>
+    <div class="nav-box">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header active">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'home' %}">主页 </a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown" id="technical_tutorial">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">技术教程 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-header">编程语言：</li>
+                                <li><a href="{% url 'category' 'Python' %}">Python</a></li>
+                                <li><a href="{% url 'category' 'Java' %}">Java</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="dropdown-header">常用框架：</li>
+                                <li><a href="{% url 'category' 'Django' %}">Django</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="dropdown-header">运维&&工具：</li>
+                                <li><a href="{% url 'category' 'Ansible' %}">Ansible</a></li>
+                                <li><a href="{% url 'category' 'Drone' %}">Drone</a></li>
+                                <li><a href="{% url 'category' 'Docker' %}">Docker</a></li>
+                                <li><a href="{% url 'category' 'Git' %}">Git</a></li>
+                                <li><a href="{% url 'category' 'Ngrok' %}">Ngrok</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'category' '其它教程' %}">其它教程</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown" id="notes_area">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">笔记专区 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'category' '生活笔记' %}">生活笔记</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'category' '学习笔记' %}">学习笔记</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'category' '其它笔记' %}">其它笔记</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown" id="conclusion_of_issue">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">问题总结 <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'category' 'Python相关' %}">Python相关</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'category' 'Java相关' %}">Java相关</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'category' 'Linux相关' %}">Linux相关</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'category' 'Git相关' %}">Git相关</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{% url 'category' '其它问题' %}">其它问题</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <form class="navbar-form navbar-left">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search" disabled="disabled">
+                        </div>
+                        <button type="submit" class="btn btn-default" disabled="disabled">Submit</button>
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li id="web-plan"><a href="{% url 'plan'%}">目标 / 计划 </a></li>
+                        <li id="web-info"><a href="{% url 'adaptive' 'about' %}">关于本站 </a></li>
+                        <li class="dropdown" id="auth_info">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            <span id="login_status"> </span>
+                            <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="log_in"><a href="{% url 'adaptive' 'login' %}">登录</a></li>
+                                <li><a href="{% url 'adaptive' 'registration' %}">注册</a></li>
+                                <li class="edit_article disabled"><a>发表文章</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="log_out disabled"><a>注销</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+    </div>
+
+
+    <!-- 内容 -->
+    <div class="middle">
+        <div class="ad-box">
+            {% include 'advertisement.html' %}
+        </div>
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- 底部信息栏 -->
+    <div class="foot text-center">
+        {% include 'foot.html' %}
+    </div>
+
+    <script>
+     // 底部信息位置
+     var foot_place = function(){
+         // 显示器可用的工作高度
+         var inner_height = $(window).height();
+
+         // 网页正文所用高度
+         var height = document.body.scrollHeight ;
+
+         if(height <= inner_height){
+             $('.foot').css({
+                 "position":"fixed",
+                 "bottom":"0",
+             })
+         }else{
+             $('.foot').css({
+                 "position":"",
+                 "bottom":"",
+             });
+         }
+
+     };
+
+     // 适配页面大小
+     var change_nav = function(){
+         var _width = $(window).width();
+         if(_width <= 1200){
+             $('.nav-box').css("padding", "0");
+             $('.middle').css("margin", "0");
+             $('.left-box').css({
+                 "padding": "0",
+                 "width": _width-400-10,
+             });
+             $('.ad-box').css("padding-left", "0");
+             $('.right-box').css({
+                 "margin-left": "",
+                 "float": "right",
+                 "padding": "5px 0",
+             });
+         }else{
+             $('.nav-box').css("padding", "0 65px");
+             $('.middle').css("margin", "0 50px");
+             $('.left-box').css({
+                 "padding": "",
+                 "width": _width-400-100,
+             });
+             $('.ad-box').css("padding-left", "15px");
+             $('.right-box').css({
+                 "margin-left": "-10px",
+                 "float": "",
+                 "padding": "5px",
+             });
+         }
+         if(_width <= 1030){
+             $('.article-time').hide();
+         }else{
+             $('.article-time').show();
+         }
+         if(_width <= 995){
+             $('.right-box').hide();
+             $('.first-word').hide();
+             $('.second-word').hide();
+             $('.left-box').css("width", "100%");
+         }else{
+
+             $('.right-box').show();
+             $('.first-word').show();
+             $('.second-word').show();
+         }
+
+         if(_width <= 800){
+             $('.web-info').hide();
+         }else{
+             $('.web-info').show();
+         }
+
+         if(_width <=760){
+             $('.web-info').show();
+         }
+
+         if(_width <= 675){
+            $('.muted a').hide();
+            $('.excerpt').css("padding", "20px 15px 5px 20px");
+            $('.focus a img').attr({
+                "width": "100",
+                "height": "60",
+            });
+            $('.excerpt h2 span').css("font-size", "15px");
+            $('.label-info').css("font-size", "15px");
+
+            $('.excerpt h2').css("top", "1px");
+         }else{
+            $('.muted a').show();
+            $('.excerpt').css("padding", "20px 15px 20px 20px");
+            $('.focus a img').attr({
+                "width": "200",
+                "height": "120",
+            });
+            $('.excerpt h2 span').css("font-size", "25px");
+            $('.label-info').css("font-size", "18px");
+
+            $('.excerpt h2').css("top", "3px");
+         }
+
+
+     };
+
+
+     // 网页加载完成时
+     $(window).load(function () {
+         foot_place();
+         change_nav();
+         adv_scroll();
+         // 判断登录状态
+         var login_status_name = "{{ request.session.name }}";
+         if(login_status_name == ""){
+             $('#login_status').text("未登录！");
+         }else{
+             $('#login_status').text(login_status_name);
+             $('.edit_article').removeClass("disabled");
+             $('.edit_article a').attr('href', "/edit_article/")
+             $('.log_out').removeClass("disabled");
+             $('.log_out a').attr('href', "/log_out/")
+             $('.log_in').addClass("disabled");
+             $('.log_in a').removeAttr("href");
+         }
+
+         if("{{ category_super }}" == "技术教程"){
+             $('#technical_tutorial').addClass("active");
+         }else if("{{ category_super }}" == "笔记专区"){
+             $('#notes_area').addClass("active");
+         }else if("{{ category_super }}" == "问题总结"){
+             $('#conclusion_of_issue').addClass("active");
+         }else if("{{ category_super }}" == "about"){
+             $('#web-info').addClass("active");
+         }else if("{{ category_super }}" == "auth_info"){
+             $('#auth_info').addClass("active");
+         }
+     });
+     // 窗口大小改变时
+     $(window).resize(function () {
+         foot_place();
+         change_nav();
+
+         // $('.ad-box').hide();
+         adv_scroll();
+     });
+    </script>
+</body>
+</html>

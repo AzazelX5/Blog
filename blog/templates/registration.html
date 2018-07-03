@@ -1,0 +1,465 @@
+{% extends "base.html" %}
+
+{% block title %}注册{% endblock %}
+
+{% block content %}
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .login_box{
+            width: 350px;
+            margin-top: 50px;
+        }
+        .form-group{
+            position: relative;
+        }
+        .tips{
+            position: absolute;
+            left: 410px;
+            top: 2px;
+            width: 200px;
+        }
+        .remember_password label{
+            margin-left: 15px;
+            float: left;
+        }
+        .remember_password a{
+            float: right;
+            margin-right: -15px;
+            color: deepskyblue;
+        }
+        .remember_password a:hover{
+            color: deeppink;
+        }
+        .btn-register{
+            width: 100%;
+            margin-top: 20px;
+        }
+        .suffix{
+            width: 115px;
+            margin-right: -10px;
+            display: none;
+        }
+        #inputCode{
+            width: 188px;
+        }
+        .btn-code{
+            width: 142px;
+            float: right;
+            margin-top: -34px;
+            margin-right: -14px;
+        }
+        .btn-code button{
+            width: 100%;
+        }
+        .go-login a{
+            margin-top: 10px;
+            margin-right: 16px;
+            float: right;
+            color: deepskyblue;
+        }
+        .go-login a:hover{
+            color: deeppink;
+        }
+    </style>
+    <div class="show">
+
+    </div>
+
+    <div class="login_box center-block">
+        <form class="form-horizontal" action="{% url 'sign_up' %}" method="post">
+            <!-- 昵称输入框 -->
+            <div class="form-group user">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </span>
+                    <input name="user" type="text" class="form-control" id="inputUser" aria-describedby="inputUserStatus" placeholder="昵称"/>
+                </div>
+                <div class="tips">
+                    <span id="inputUserStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 密码输入框 -->
+            <div class="form-group password">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    </span>
+                    <input name="password" type="password" class="form-control" id="inputPassword" aria-describedby="inputPasswordStatus" placeholder="密码（8-16个字符组成）"/>
+                </div>
+                <div class="tips">
+                    <span id="inputPasswordStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 验证密码输入框 -->
+            <div class="form-group password-verify">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    </span>
+                    <input name="password-verify" type="password" class="form-control" id="inputPasswordVerify" aria-describedby="inputPasswordVerifyStatus" placeholder="确认密码"/>
+                </div>
+                <div class="tips">
+                    <span id="inputPasswordVerifyStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 邮箱输入框 -->
+            <div class="form-group email">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                    </span>
+                    <input name="email" type="text" class="form-control" id="inputEmail" aria-describedby="inputEmailStatus" placeholder="填写常用邮箱名称"/>
+                    <span class="input-group-addon">@</span>
+                    <select name="email_default_suffix" id="email_suffix_select" class="form-control">
+                        <option>请选择...</option>
+                        <option>gmail.com</option>
+                        <option>live.cn</option>
+                        <option>live.com</option>
+                        <option>qq.com</option>
+                        <option>outlook.com</option>
+                        <option>hotmail.com</option>
+                        <option>163.com</option>
+                        <option>yahoo.com</option>
+                        <option>其他...</option>
+                    </select>
+                    <div class="suffix">
+                        <input name="email_suffix" id="email_suffix_input" type="text" class="form-control" placeholder="邮箱后缀">
+                    </div>
+                </div>
+                <div class="tips">
+                    <span id="inputEmailStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <!-- 验证码输入框 -->
+            <div class="form-group code">
+                <div class="col-sm-8 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-text-background" aria-hidden="true"></span>
+                    </span>
+                    <input name="code" type="text" disabled="disabled" class="form-control" id="inputCode" aria-describedby="inputCodeStatus" placeholder="填写邮箱收到的6位验证码"/>
+                </div>
+                <div class="btn-code col-sm-4">
+                        <button type="button" class="btn btn-info btn-obtain-code" disabled="disabled">点击获取</button>
+                </div>
+                <div class="tips">
+                    <span id="inputCodeStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <!-- 同意条款选择框 -->
+                <div class="checkbox">
+                    <label>
+                        <input name="agree" type="checkbox" id="checkboxSuccess" value="option1">
+                        同意条款
+                    </label>
+                </div>
+
+                <!-- 注册按钮 -->
+                <input type="submit" class="btn btn-info btn-register"  value="注册" disabled="disabled"> <!-- disabled="disabled" -->
+
+                <!-- 已有账号，直接登录框 -->
+                <div class="go-login">
+                    <a href="{% url 'adaptive' 'login' %}">已有账号，直接登录 -></a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+
+    <script>
+        $(function () {
+            // email后缀初始颜色设置和选择 "其他" 切换成输入框
+            $('select').css("color", "#999");
+            $('select').bind('change', function () {
+                $(this).css("color", "rgb(85, 85, 85)");
+
+                if($(this).val() == "请选择..."){
+                    $(this).css("color", "#999");
+                }
+
+                if($(this).val() == '其他...'){
+                    $(this).hide();
+                    $('.suffix').show();
+                }
+            });
+
+            //监控账号框的变化
+            $('#inputUser').click(function () {
+                if($(this).val().length == 0){
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputUserStatus').text("账号不能为空！");
+                }
+            });
+            $('#inputUser').change(function () {
+                if($(this).val().length == 0){
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputUserStatus').text("账号不能为空！");
+                }else if($(this).val().length < 6){
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputUserStatus').text("账号必须大于6位");
+                }else{
+                    $.ajax({
+                        url: "{% url 'inspect_author' %}",
+                        type: "GET",
+                        data: {"type":"name", "value": $(this).val()},
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if(data.status){
+                                $('.user').addClass("has-success");
+                                $('.user').removeClass("has-error");
+                                inspect_submit();
+                            }else{
+                                $('.user').addClass("has-error");
+                                $('.user').removeClass("has-success");
+                                inspect_submit();
+                            }
+                            $('#inputUserStatus').text(data.reason);
+                        },
+                        error: function () {
+                            alert('服务器出错！');
+                        }
+                    })
+                }
+            });
+
+            // 监听密码框的变化
+            $('#inputPassword, #inputPasswordVerify').on("click input change propertychange", function () {
+
+                if($('#inputPassword').val().length >= 8){
+                    $('.password').addClass("has-success");
+                    $('.password').removeClass("has-error");
+                    inspect_submit();
+
+                    $('#inputPasswordStatus').text("密码格式正确！")
+                }else if($('#inputPassword').val().length == 0){
+                    $('.password').addClass("has-error");
+                    $('.password').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputPasswordStatus').text("密码不能为空！")
+                }else{
+                    $('.password').addClass("has-error");
+                    $('.password').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputPasswordStatus').text("密码长度必须大于8！");
+                }
+
+                if($('#inputPasswordVerify').val().length == 0){
+                    $('.password-verify').addClass("has-error");
+                    $('.password-verify').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputPasswordVerifyStatus').text("密码不能为空！");
+                }else{
+                    if($('#inputPasswordVerify').val() == $('#inputPassword').val()){
+                        $('.password-verify').addClass("has-success");
+                        $('.password-verify').removeClass("has-error");
+                        inspect_submit();
+
+                        $('#inputPasswordVerifyStatus').text("两次密码相同！");
+
+                    }else{
+                        $('.password-verify').addClass("has-error");
+                        $('.password-verify').removeClass("has-success");
+                        inspect_submit();
+
+                        $('#inputPasswordVerifyStatus').text("两次输入密码不同！");
+                    }
+                }
+            });
+
+            // 监听邮箱框的变化
+            var email;
+            $('.email').on("click change", function () {
+                // 当邮箱内容改变时，清空验证码栏状态
+                $('.code').removeClass("has-error");
+                $('.code').removeClass("has-success");
+                inspect_submit();
+                $('#inputCode').attr("disabled", true);
+                $('.btn-obtain-code').attr("disabled", true);
+                $('#inputCode').val("");
+                $('#inputCodeStatus').text("");
+
+                // 获得邮箱前后缀的值
+                var email_prefix = $('#inputEmail').val();
+                if($('#email_suffix_select').css('display') == 'none'){
+                    var email_suffix = $('#email_suffix_input').val();
+                }else{
+                    if($('#email_suffix_select').val() != '请选择...') {
+                        var email_suffix = $('#email_suffix_select').val();
+                    }
+                }
+
+                if(email_prefix.length != 0 && email_suffix.length != 0){
+                    email = email_prefix + "@" + email_suffix;
+                    $.ajax({
+                        url: "{% url 'inspect_author' %}",
+                        type: "GET",
+                        data: {"type":"email", "value": email},
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if(data.status){
+                                $('.email').addClass("has-success");
+                                $('.email').removeClass("has-error");
+                                inspect_submit();
+
+                                $('.btn-obtain-code').attr("disabled", false);
+                            }else{
+                                $('.email').addClass("has-error");
+                                $('.email').removeClass("has-success");
+                                inspect_submit();
+                            }
+                            $('#inputEmailStatus').text(data.reason);
+                        },
+                        error: function () {
+                            alert('服务器出错！');
+                        }
+                    })
+                }else{
+                    $('.email').addClass("has-error");
+                    $('.email').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputEmailStatus').text("邮箱不能为空！");
+                }
+            });
+            var str_id;
+            // 点击获取验证码
+            $('.btn-obtain-code').click(function () {
+                str_id = Math.random().toString(36).substr(5);
+                var data = {
+                    type: "注册账号",
+                    id: str_id,
+                    email: email
+                };
+                $.ajax({
+                    url: "{% url 'send_email' %}",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        alert(data.result);
+                        $('#inputCode').attr("disabled", false);
+                    },
+                    error: function () {
+                        alert('服务器出错！');
+                    }
+                });
+
+                var time = 60;
+                $(this).text(time);
+                var settime = function (obj) {
+                    if(time == 0){
+                        obj.attr("disabled", false);
+                        obj.text("重新获取");
+                        return;
+                    }else{
+                        obj.attr("disabled", true);
+                        obj.text(time);
+                        time--;
+                    }
+                    setTimeout(function () {
+                        settime(obj);
+                    }, 10);
+                };
+                settime($(this));
+            });
+
+            // 监视验证码框变化
+            $('#inputCode').click(function () {
+                if($(this).val().length == 0){
+                    $('.code').addClass("has-error");
+                    $('.code').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputCodeStatus').text("验证码不能为空！");
+                }
+            });
+            $('#inputCode').change(function () {
+                if($(this).val().length == 0){
+                    $('.code').addClass("has-error");
+                    $('.code').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputCodeStatus').text("验证码不能为空！");
+                }else if($(this).val().length == 6){
+                    $.ajax({
+                        url: "{% url 'inspect_author' %}",
+                        type: "GET",
+                        data: {"type":"code", "value": $(this).val(), "id":str_id},
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            if(data.status){
+                                $('.code').addClass("has-success");
+                                $('.code').removeClass("has-error");
+                                inspect_submit();
+                            }else{
+                                $('.code').addClass("has-error");
+                                $('.code').removeClass("has-success");
+                                inspect_submit();
+                            }
+                            $('#inputCodeStatus').text(data.reason);
+                        },
+                        error: function () {
+                            alert('服务器出错！');
+                        }
+                    })
+                }else{
+                    $('.code').addClass("has-error");
+                    $('.code').removeClass("has-success");
+                    inspect_submit();
+
+                    $('#inputCodeStatus').text("验证码长度不对！");
+                }
+            });
+
+            // 同意条款单选框
+            $('#checkboxSuccess').click(function () {
+                inspect_submit();
+            });
+
+            var inspect_submit = function () {
+                var has_son_str = function (obj) {
+                    return obj.hasClass("has-success");
+                };
+                if(
+                    has_son_str($('.user')) &&
+                    has_son_str($('.password')) &&
+                    has_son_str($('.password-verify')) &&
+                    has_son_str($('.email')) &&
+                    has_son_str($('.code')) &&
+                    $('#checkboxSuccess').is(":checked")
+
+                ){
+                    $('.btn-register').attr('disabled', false)
+                }else{
+                    $('.btn-register').attr('disabled', true)
+                }
+            };
+        });
+    </script>
+{% endblock %}

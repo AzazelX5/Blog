@@ -1,0 +1,87 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    /* 网页正文左边样式 */
+    .left-box{
+        /*border: deepskyblue 1px solid;*/
+        /*padding: 0;*/
+    }
+    /* 网页正文右边样式 */
+    .right-box{
+        margin-left: -10px;
+        margin-top: -5px;
+        padding: 5px;
+        width: 400px;
+        /*border: cyan 1px solid;*/
+    }
+    .path-nav ol{
+        background: white;
+        margin-bottom: 10px;
+    }
+    .container-fluid{
+        /*border: darkorange 1px solid;*/
+    }
+    /*#category-02:hover{*/
+        /*cursor: pointer;*/
+    /*}*/
+</style>
+<div class="container-fluid">
+    <!-- 页面主体 -->
+    <div class="row">
+        <!-- 左边文章列表 -->
+        <div class="col-md-8 left-box">
+            <div class="path-nav">
+                <ol class="breadcrumb">
+                    <li id="category-01"><a href="{% url 'home' %}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>&nbsp;&nbsp;&nbsp;主页</a></li>
+                    <li id="category-02" style="display: none"><a></a></li>
+                    <li id="category-03" style="display: none"><a></a></li>
+                    <li id="category-04" style="display: none"></li>
+                </ol>
+            </div>
+            {% block left_content %}{% endblock %}
+        </div>
+        <!-- 右边信息区 -->
+        <div class="col-md-4 right-box">
+            {% include 'right_info.html' %}
+        </div>
+    </div>
+</div>
+<script>
+    // 网页加载完成时
+    $(window).load(function () {
+        if("{{ status }}" == 1){
+            $('#category-02').show();
+            $('#category-02 a').attr("href", "/category_super/{{ category_super }}/");
+            $('#category-02 a').text("{{ category_super }}");
+        }else if("{{ status }}" == 2) {
+            $('#category-02').show();
+            $('#category-02 a').attr("href", "/category_super/{{ category_super }}/");
+            $('#category-02 a').text("{{ category_super }}");
+
+            $('#category-03').show();
+            $('#category-03 a').attr("href", "/category/{{ category_name }}/");
+            $('#category-03 a').text("{{ category_name }}");
+        }else if("{{ status }}" == 3) {
+            $('#category-02').show();
+            $('#category-02 a').attr("href", "/category_super/{{ category_super }}/");
+            $('#category-02 a').text("{{ category_super }}");
+
+            $('#category-03').show();
+            $('#category-03 a').attr("href", "/category/{{ article.category }}/");
+            $('#category-03 a').text("{{ article.category }}");
+
+            $('#category-04').show();
+            $('#category-04').text("{{ article.name }}")
+        }
+
+    });
+    // 窗口大小改变时
+    $(window).resize(function () {
+
+    });
+
+</script>
+
+

@@ -1,0 +1,338 @@
+{% extends "base.html" %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .login_box{
+            width: 300px;
+            margin-top: 50px;
+        }
+        .form-group{
+            position: relative;
+        }
+        .tips{
+            position: absolute;
+            left: 350px;
+            top: 2px;
+            width: 200px;
+            /*border: deepskyblue 1px solid;*/
+        }
+        .view{
+            position: absolute;
+            left: 305px;
+            bottom: 5px;
+            z-index: 2;
+        }
+        .view:hover{
+            cursor: pointer;
+        }
+        #inputPasswordShow{
+            display: none;
+        }
+        .btn-login{
+            width: 100%;
+            margin-top: 20px;
+        }
+        .find-pass {
+            float: right;
+        }
+        .find-pass a{
+            color: deepskyblue;
+        }
+        .go-registration a{
+            margin-top: 10px;
+            float: right;
+            color: deepskyblue;
+        }
+        .a-color:hover{
+            color: deeppink;
+        }
+        .btn-code{
+            width: 140px;
+            float: right;
+            margin-top: -34px;
+            margin-right: -14px;
+        }
+        .btn-code button{
+            width: 100%;
+        }
+        #inputCode{
+            width: 170px;
+        }
+        #image-code{
+            display: none;
+            width: 100%;
+            height: 34px;
+        }
+        .test-info{
+            position: absolute;
+            left: 0;
+            top: 200px;
+            width: 200px;
+            height: 200px;
+            border: deepskyblue 1px solid;
+        }
+    </style>
+    <div class="login_box center-block">
+        <form class="form-horizontal">
+            <!-- 昵称 -->
+            <div class="form-group user">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </span>
+                    <input name="user" type="text" class="form-control" id="inputUser" aria-describedby="inputUserStatus" placeholder="昵称 / 邮箱"/>
+                </div>
+                <div class="tips">
+                    <span id="inputUserStatus" class="help-block"></span>
+                </div>
+            </div>
+            <!-- 密码 -->
+            <div class="form-group password">
+                <div class="col-sm-12 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    </span>
+                    <input name="password" type="password" class="form-control" id="inputPassword" aria-describedby="inputPasswordStatus" placeholder="请输入密码"/>
+                    <input name="password_show" type="text" class="form-control" id="inputPasswordShow" aria-describedby="inputPasswordStatus" placeholder="请输入密码"/>
+                </div>
+                <div class="view sr-only">
+                        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                    </div>
+                <div class="tips">
+                    <span id="inputPasswordStatus" class="help-block"></span>
+                </div>
+            </div>
+             <!-- 验证码输入框 -->
+            <div class="form-group code">
+                <div class="col-sm-7 input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                    </span>
+                    <input name="code" type="text" class="form-control" id="inputCode" aria-describedby="inputCodeStatus" disabled="disabled" placeholder="填写验证码"/>
+                </div>
+                <div class="col-sm-5 btn-code">
+                        <button type="button" class="btn btn-info btn-obtain-code">点击获取</button>
+                        <div id="image-code"></div>
+                </div>
+                <div class="tips">
+                    <span id="inputCodeStatus" class="help-block"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <!-- 记住密码 -->
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="checkboxSuccess" value="option1" id="checkboxSuccess">
+                        记住密码
+                    </label>
+
+                    <div class="find-pass">
+                        <a href="#" class="a-color">找回密码</a>
+                    </div>
+                </div>
+
+                <!-- 注册按钮 -->
+                <button type="button" class="btn btn-info btn-login" disabled="disabled">登录</button>
+
+                <!-- 已有账号，直接登录框 -->
+                <div class="go-registration">
+                    <a href="{% url 'adaptive' 'registration' %}" class="a-color">没有账号，点击注册 -></a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% load static %}
+    <script type="text/javascript" src="{% static 'js/gVerify.js'%}"></script>
+
+    <script>
+        $(function () {
+            //监控账号框的变化
+            $('#inputUser').on("click input change", function () {
+                if($('#inputUser').val().length == 0){
+                    $('.user').addClass("has-error");
+                    $('.user').removeClass("has-success");
+                    $('#inputUserStatus').text("账号不能为空");
+
+                    inspect_submit();
+
+                }else{
+                    $('.user').addClass("has-success");
+                    $('.user').removeClass("has-error");
+                    $('#inputUserStatus').text("");
+
+                    inspect_submit();
+                }
+            });
+            // 监听密码框的变化
+            var password;
+            $('#inputPassword, #inputPasswordShow').on("click input change", function () {
+                if($(this).css("display") != "none"){
+                    if($(this).val().length == 0){
+                        $('.password').addClass("has-error");
+                        $('.password').removeClass("has-success");
+                        $('#inputPasswordStatus').text("密码不能为空");
+
+                        inspect_submit();
+
+                        $('.view').addClass("sr-only");
+
+                    }else{
+                        $('.password').addClass("has-success");
+                        $('.password').removeClass("has-error");
+                        $('#inputPasswordStatus').text("");
+
+                        inspect_submit();
+
+                        $('.view').removeClass("sr-only");
+                    }
+                    password = $(this).val();
+                }
+            });
+            // 点击 显示/隐藏 密码
+            $('.view').click(function () {
+                if($('.view span').attr("class") == "glyphicon glyphicon-eye-close"){
+                    $('.view span').removeClass("glyphicon-eye-close");
+                    $('.view span').addClass("glyphicon-eye-open");
+
+                    $('#inputPassword').hide();
+                    $('#inputPasswordShow').show();
+
+                    $('#inputPasswordShow').val(password);
+                    $('#inputPassword').val(password);
+
+                }else{
+                    $('.view span').removeClass("glyphicon-eye-open");
+                    $('.view span').addClass("glyphicon-eye-close");
+
+                    $('#inputPasswordShow').hide();
+                    $('#inputPassword').show();
+
+                    $('#inputPasswordShow').val(password);
+                    $('#inputPassword').val(password);
+                }
+            });
+
+            // 点击获取验证码
+            var verifyCode;
+            var send_code = function(code){
+                $.ajax({
+                    url: "{% url 'save_code' %}",
+                    type: "GET",
+                    data: {"code": code},
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+
+                    },
+                    error: function () {
+                        alert('服务器出错！');
+                    }
+                })
+            };
+
+            $('.btn-obtain-code').click(function () {
+                $(this).hide();
+                $('#image-code').show();
+                verifyCode = new GVerify("image-code");
+
+                send_code(verifyCode.options.code);
+                $('#inputCodeStatus').text("验证码不区分大小写！")
+                $('#inputCode').attr("disabled", false);
+            });
+            // 验证码图片点击
+            $('#image-code').click(function () {
+                $('#inputCode').val("");
+                $('.code').removeClass("has-success");
+                $('.code').removeClass("has-error");
+
+                send_code(verifyCode.options.code);
+                $('#inputCodeStatus').text("验证码不区分大小写！");
+                inspect_submit();
+            });
+            // 监听验证码框变化
+            $('#inputCode').on('click change input', function () {
+                var code = $(this).val();
+                if(code.length == 0){
+                    $('.code').addClass('has-error');
+                    $('.code').removeClass('has-success');
+
+                    $('#inputCodeStatus').text("验证码不能为空！");
+
+                    inspect_submit();
+                }else{
+                    if(code.toLowerCase() == verifyCode.options.code.toLowerCase()){
+                        $('.code').addClass('has-success');
+                        $('.code').removeClass('has-error');
+
+                        $('#inputCodeStatus').text("验证码输入正确！");
+
+                        inspect_submit();
+                    }else{
+                        $('.code').addClass('has-error');
+                        $('.code').removeClass('has-success');
+
+                        $('#inputCodeStatus').text("验证码输入有误！")
+
+                        inspect_submit();
+                    }
+                }
+
+            });
+
+            var inspect_submit = function () {
+                var has_son_str = function (obj) {
+                    return obj.hasClass("has-success");
+                };
+                if(
+                    has_son_str($('.user')) &&
+                    has_son_str($('.password')) &&
+                    has_son_str($('.code'))
+                ){
+                    $('.btn-login').attr('disabled', false)
+                }else{
+                    $('.btn-login').attr('disabled', true)
+                }
+            };
+
+            $('.btn-login').click(function () {
+                var data = {
+                    name: $('#inputUser').val(),
+                    password: password,
+                    code: verifyCode.options.code,
+                    keep_pass: $('#checkboxSuccess').is(":checked"),
+                };
+
+                $.ajax({
+                    url: "{% url 'log_in' %}",
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if(data.status){
+                            window.location.href = "/";
+                        }else{
+                            $('.user, .password').addClass("has-error");
+                            $('.user, .password').removeClass("has-success");
+                            inspect_submit();
+
+                            $('#inputUserStatus').text(data.reason);
+                            $('#inputPasswordStatus').text(data.reason);
+                        }
+                    },
+                    error: function () {
+                        alert('服务器出错！');
+                    }
+                })
+            });
+        });
+    </script>
+{% endblock %}
