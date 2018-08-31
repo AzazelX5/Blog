@@ -11,9 +11,9 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_DB: blog
-      POSTGRES_USER: blog_admin
-      POSTGRES_PASSWORD: blog-v587
+      POSTGRES_DB: xxxxxx
+      POSTGRES_USER: xxxxxx
+      POSTGRES_PASSWORD: xxxxxx
     ports:
       - "5432:5432"
     volumes:
